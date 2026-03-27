@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Emergency Service - Media &amp; Location</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ec5b13",
+                        "background-light": "#f8f6f6",
+                        "background-dark": "#221610",
+                    },
+                    fontFamily: {
+                        "display": ["Public Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen">
+<div class="relative flex h-auto min-h-screen w-full max-w-md mx-auto flex-col bg-background-light dark:bg-background-dark overflow-x-hidden shadow-xl">
+<!-- TopAppBar Navigation -->
+<div class="flex items-center p-4 pb-2 justify-between">
+<button class="flex size-10 shrink-0 items-center justify-center rounded-full hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h2 class="text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center pr-10">Media &amp; Location</h2>
+</div>
+<!-- Progress Bar Section -->
+<div class="flex flex-col gap-3 p-4">
+<div class="flex gap-6 justify-between items-center">
+<p class="text-sm font-medium leading-normal opacity-80">Reporting Progress</p>
+<p class="text-xs font-bold leading-normal text-primary">Step 2 of 3</p>
+</div>
+<div class="rounded-full bg-primary/20 h-2 w-full overflow-hidden">
+<div class="h-full bg-primary" style="width: 66.6%;"></div>
+</div>
+</div>
+<!-- Media Upload Section -->
+<div class="px-4 py-4">
+<h3 class="text-base font-bold leading-tight tracking-[-0.015em] mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-xl">perm_media</span>
+                Media Upload
+            </h3>
+<div class="grid grid-cols-2 gap-3 mb-4">
+<button class="flex flex-col items-center justify-center gap-2 rounded-xl h-24 bg-primary/10 border-2 border-dashed border-primary/30 text-primary hover:bg-primary/20 transition-all group">
+<span class="material-symbols-outlined text-3xl group-hover:scale-110 transition-transform">photo_camera</span>
+<span class="text-xs font-bold uppercase tracking-wider">Live Camera</span>
+</button>
+<button class="flex flex-col items-center justify-center gap-2 rounded-xl h-24 bg-primary/10 border-2 border-dashed border-primary/30 text-primary hover:bg-primary/20 transition-all group">
+<span class="material-symbols-outlined text-3xl group-hover:scale-110 transition-transform">upload_file</span>
+<span class="text-xs font-bold uppercase tracking-wider">Gallery / Files</span>
+</button>
+</div>
+<!-- Voice Note Feature -->
+<button class="flex w-full items-center justify-center gap-2 rounded-xl h-12 bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors">
+<span class="material-symbols-outlined">mic</span>
+<span>Add Voice Note</span>
+</button>
+</div>
+<!-- Details Section -->
+<div class="px-4 py-2">
+<label class="flex flex-col w-full">
+<p class="text-sm font-bold leading-normal pb-2 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-xl">description</span>
+                    More Details
+                </p>
+<textarea class="form-input flex w-full resize-none overflow-hidden rounded-xl bg-slate-100 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 focus:border-primary focus:ring-1 focus:ring-primary min-h-[120px] placeholder:text-slate-400 dark:placeholder:text-slate-500 p-4 text-sm font-normal leading-normal" placeholder="Describe the situation briefly..."></textarea>
+</label>
+</div>
+<!-- Location Section -->
+<div class="px-4 py-4">
+<h3 class="text-base font-bold leading-tight tracking-[-0.015em] mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-xl">location_on</span>
+                Detailed Location
+            </h3>
+<div class="flex flex-col gap-3">
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary">search</span>
+<input class="w-full pl-10 pr-4 h-12 rounded-xl bg-slate-100 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 focus:border-primary focus:ring-1 focus:ring-primary text-sm" placeholder="Type area..." type="text"/>
+</div>
+<div class="relative w-full aspect-video rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700">
+<img class="w-full h-full object-cover grayscale contrast-125 opacity-80" data-alt="Stylized map showing city streets" data-location="Los Angeles" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAbT9ke488SY1KzD-m_leGA-Gz8ZXfDWhqT76iclYIFDHqqVtlntrJQ3qyhRR64haC2npiOmwZqgn5sY1evDX6Dt2aKOXjskxdjFT7LFsj64xx7SJ4x4INVcJytn0RwCy2w_TljWKwm23l8pLxHOIeolVsn_sva-1tPs6lVBtem0laudnp0CkBm45SIqX7yUCnAFQpv8HKxsuH8_hKmWBMHZlrPrMs0FUSPiOiVfRS1dEPC-drFcaKvpatj990kLpSIT1BB-FclNvM"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background-light/40 dark:from-background-dark/40 to-transparent pointer-events-none"></div>
+<button class="absolute bottom-3 right-3 flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-full shadow-lg hover:bg-primary/90 transition-transform active:scale-95 text-xs font-bold">
+<span class="material-symbols-outlined text-sm">my_location</span>
+                        Use My Current Location
+                    </button>
+</div>
+</div>
+</div>
+<!-- Footer Action -->
+<div class="mt-auto p-4 bg-background-light dark:bg-background-dark border-t border-slate-200 dark:border-slate-800 sticky bottom-0">
+<button class="flex w-full items-center justify-center gap-2 rounded-xl h-14 bg-primary text-white font-bold text-lg hover:shadow-lg hover:shadow-primary/20 transition-all">
+<span>Next: Review</span>
+<span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+<div class="h-4"></div>
+</div>
+</body></html>

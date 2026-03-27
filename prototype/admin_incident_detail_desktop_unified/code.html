@@ -1,0 +1,234 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>DMS Admin - Incident Detail</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#ec5b13",
+            "background-light": "#f8f6f6",
+            "background-dark": "#221610",
+            'status-pending': '#ef4444',
+            'status-progress': '#f97316',
+            'status-resolved': '#22c55e',
+          },
+          fontFamily: {
+            "display": ["Public Sans"]
+          },
+          borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+        },
+      },
+    }
+  </script>
+<style>
+    .timeline-dot {
+      width: 10px;
+      height: 10px;
+      border: 2px solid #cbd5e1;
+      border-radius: 50%;
+      background: white;
+      position: relative;
+      z-index: 10;
+    }
+    .timeline-line {
+      position: absolute;
+      left: 4px;
+      top: 10px;
+      bottom: -24px;
+      width: 2px;
+      background-color: #e2e8f0;
+    }
+  </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100">
+<div class="relative flex h-screen w-full flex-col overflow-hidden">
+<!-- Header -->
+<header class="flex h-16 w-full items-center justify-between border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-6 shrink-0">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-3">
+<div class="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-white">
+<span class="material-symbols-outlined" style="">shield_person</span>
+</div>
+<h2 class="text-xl font-bold leading-tight tracking-tight text-slate-900 dark:text-white" style="">DMS Admin</h2>
+</div>
+<div class="hidden md:flex">
+<label class="relative flex h-10 w-64 items-center" style="">
+<span class="material-symbols-outlined absolute left-3 text-slate-400" style="">search</span>
+<input class="h-full w-full rounded-xl border-none bg-slate-100 dark:bg-slate-800 pl-10 pr-4 text-sm focus:ring-2 focus:ring-primary/50 text-slate-900 dark:text-white placeholder:text-slate-500" placeholder="Search incidents..." value="">
+</label>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700" style="">
+<span class="material-symbols-outlined" style="">notifications</span>
+</button>
+<button class="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700" style="">
+<span class="material-symbols-outlined" style="">settings</span>
+</button>
+<div class="h-10 w-10 rounded-full border-2 border-primary/20 bg-cover bg-center bg-no-repeat" style="background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuDCpq5-8Kcp5Z9-8Q3eRPa98OEx1zRINjTG4ZuyCGP3P4erYTEckkI1AgAIz0c6KuuGV6x6UB3qP8QvgY6puQu2XktI3FunMhHXKlrG7tmwbI_WCHc-xhKudNEowwhUTzonKEB2OVZu-zBMnTNOEh5Dzus9oqaHBfft5OZPnausL1e_OkEzc8YKxFNvBfudZ_Bl1KFfE19z19p5Pyw7cm8ZuTY9hky_EiUVlgkEELU2sOvDwKyUzYXCLP2fvwy43tu2ItNFG0uvkA4&quot;);"></div>
+</div>
+</header>
+<div class="flex flex-1 overflow-hidden">
+<!-- Sidebar -->
+<aside class="w-64 border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex flex-col py-6 shrink-0">
+<nav class="flex-1 space-y-1 px-4">
+<a class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors" href="#" style="">
+<span class="material-symbols-outlined" style="">dashboard</span>
+<span class="text-sm font-medium" style="">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 rounded-xl bg-primary/10 px-4 py-3 text-primary transition-colors" href="#" style="">
+<span class="material-symbols-outlined" style="">warning</span>
+<span class="text-sm font-bold" style="">Incidents</span>
+</a>
+<a class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors" href="#" style="">
+<span class="material-symbols-outlined" style="">group</span>
+<span class="text-sm font-medium" style="">User Management</span>
+</a>
+<a class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors" href="#" style="">
+<span class="material-symbols-outlined" style="">bar_chart</span>
+<span class="text-sm font-medium" style="">Reporting</span>
+</a>
+<a class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors" href="#" style="">
+<span class="material-symbols-outlined" style="">database</span>
+<span class="text-sm font-medium" style="">System Logs</span>
+</a>
+</nav>
+<div class="px-4 mt-auto">
+<div class="rounded-xl bg-slate-50 dark:bg-slate-800 p-4">
+<p class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2" style=""><br></p>
+<div class="h-2 w-full rounded-full bg-slate-200 dark:bg-slate-700">
+<div class="h-full w-3/4 rounded-full bg-primary"></div>
+</div>
+<p class="mt-2 text-xs text-slate-500" style=""><br></p>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 overflow-y-auto bg-background-light dark:bg-background-dark p-8">
+<div class="mx-auto max-w-7xl">
+<!-- Page Header -->
+<div class="flex flex-wrap items-center justify-between gap-4 mb-8">
+<div>
+<h1 class="text-3xl font-bold tracking-tight text-slate-900 dark:text-white uppercase" style="">Landslide #5678</h1>
+<p class="mt-1 text-slate-500 font-semibold uppercase tracking-wider text-sm" style="">District: Mangan • ID: #5678</p>
+</div>
+<button class="flex items-center gap-2 rounded-xl bg-slate-900 px-5 py-2.5 font-bold text-white shadow-lg hover:bg-slate-800 transition-all" style="">
+<span class="material-symbols-outlined text-xl" style="">picture_as_pdf</span>
+<span class="" style="">Export to PDF</span>
+</button>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<!-- Left Column: Details -->
+<div class="lg:col-span-2 space-y-8">
+<!-- Origin Report -->
+<div class="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm">
+<h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4" style="">Origin Report</h3>
+<blockquote class="text-xl font-bold italic text-slate-700 dark:text-slate-300 border-l-4 border-primary pl-4 py-2 bg-slate-50 dark:bg-slate-800/50 rounded-r-lg" style="">
+                  "Minor road blockage due to debris."
+                </blockquote>
+</div>
+<!-- Location & Time -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm">
+<h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4" style="">Location Detail</h3>
+<div class="flex items-center gap-4">
+<div class="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">
+<span class="material-symbols-outlined" style="">location_on</span>
+</div>
+<span class="text-lg font-bold text-slate-800 dark:text-slate-200" style="">DIKCHU ROAD</span>
+</div>
+</div>
+<div class="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm">
+<h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4" style="">Reported At</h3>
+<div class="flex items-center gap-4">
+<div class="flex h-12 w-12 items-center justify-center rounded-xl bg-slate-50 text-slate-600 dark:bg-slate-800 dark:text-slate-300">
+<span class="material-symbols-outlined" style="">schedule</span>
+</div>
+<span class="text-lg font-bold text-slate-800 dark:text-slate-200" style="">16 MAR, 07:50 AM</span>
+</div>
+</div>
+</div>
+<!-- Operational Timeline -->
+<div class="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm">
+<h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-6" style="">Operational Timeline</h3>
+<div class="space-y-8 relative">
+<div class="relative pl-10">
+<div class="timeline-dot"></div>
+<div class="timeline-line"></div>
+<div class="flex flex-col">
+<span class="text-xs font-bold text-slate-400 uppercase" style="">16 MAR, 07:50 AM</span>
+<span class="text-sm font-bold uppercase mt-1" style="">Status Transition: <span class="text-status-pending" style="">Pending</span></span>
+</div>
+</div>
+<div class="relative pl-10">
+<div class="timeline-dot"></div>
+<div class="flex flex-col">
+<span class="text-xs font-bold text-slate-400 uppercase" style="">16 MAR, 08:50 AM</span>
+<span class="text-sm font-bold uppercase mt-1" style="">Status Transition: <span class="text-status-progress" style="">In Progress</span></span>
+</div>
+</div>
+</div>
+</div>
+<!-- Visual Evidence -->
+<div class="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm">
+<h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4" style="">Visual Evidence</h3>
+<div class="flex gap-4 overflow-x-auto pb-2">
+<div class="w-32 h-32 flex-shrink-0 bg-slate-100 dark:bg-slate-800 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700">
+<img alt="Evidence Thumbnail" class="object-cover w-full h-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB2T7YL8LufMD-1lDWgssT6UiDvdTDqDLLmj5TAWtcG8IG2Ed2AcGaORZMLGhkTtiLkuPde83xnsRIRaOPYWX6IhABlyCXUheDwi3qMx0HhYX3UkzObTZH--_aqpcwnBOwlhbMbZK8J8-AoI2ZXYV5sFs831QpAMDhmq8hUUrDD3hV-6TDjwh61yHVC1w_kBcUmCM5bwU0gLFfsmAdjcvTZ1QA-jAz_E24Ub29zFfDONkmItH_wjQdH25JV-LUxVp5OmRSw-sLJsek" style="">
+</div>
+<div class="w-32 h-32 flex-shrink-0 bg-slate-100 dark:bg-slate-800 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700">
+<img alt="Evidence Thumbnail" class="object-cover w-full h-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA3Ji3PzmC_TDEqr__Z9NCLyIs_6_JpuX6IR7vIsHbjq2-nNLmKMeZuvZoluTYRfegGVleoEd1251VSWmw_q1o24bhd8X3XsmJ8ju7ivfCzLdRn-yuk_6FIOmLWZUO_mQfVOGFxJVUD1Juc39v1Z4ihnvpk46uuHpdCswg9SZ-CxbQ9PRDHG5EjZuu2R2-FcJ2xjfkYyoPDPPKzncAwrLJtd8VBqjE8ZPTd03M8CMaD9nx4LJlglyZ_eQ-OyTnZZghDpcfP6D3oqL0" style="">
+</div>
+<button class="w-32 h-32 flex-shrink-0 bg-slate-50 dark:bg-slate-800/50 rounded-xl border-2 border-dashed border-slate-200 dark:border-slate-700 flex flex-col items-center justify-center text-slate-400 hover:text-primary hover:border-primary transition-all" style="">
+<span class="material-symbols-outlined text-3xl" style="">add</span>
+<span class="text-[10px] font-bold mt-1" style="">ADD NEW</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Right Column: Actions -->
+<div class="space-y-8">
+<!-- Update Status -->
+<div class="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm">
+<h3 class="text-xs font-bold text-primary uppercase tracking-widest mb-4" style="">Update Status</h3>
+<div class="space-y-3">
+<button class="w-full flex items-center justify-between rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-3 text-sm font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors" style="">
+<span class="" style="">UNASSIGNED</span>
+<span class="text-slate-400" style="">⏳</span>
+</button>
+<button class="w-full flex items-center justify-between rounded-xl border-2 border-orange-500 bg-orange-50 dark:bg-orange-900/10 px-4 py-3 text-sm font-bold text-orange-700 dark:text-orange-400" style="">
+<span class="" style="">IN PROGRESS</span>
+<span class="" style="">🚧</span>
+</button>
+<button class="w-full flex items-center justify-between rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-3 text-sm font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors" style="">
+<span class="" style="">RESOLVE &amp; CLOSE</span>
+<span class="text-emerald-500" style="">✅</span>
+</button>
+</div>
+</div>
+<!-- Operator Notes -->
+<div class="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm">
+<h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4" style="">Operator Notes (Encrypted)</h3>
+<div class="relative">
+<textarea class="w-full rounded-xl border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 p-4 text-sm font-medium text-slate-800 dark:text-slate-200 focus:ring-2 focus:ring-primary focus:border-transparent min-h-[160px] resize-none" placeholder="Add internal operation notes...">JCB dispatched to clear site.</textarea>
+<div class="absolute bottom-3 right-3 text-[10px] font-bold text-slate-400 tracking-widest uppercase" style="">
+                    Last Update: 08:50 AM
+                  </div>
+</div>
+<button class="w-full mt-4 bg-primary text-white py-3 rounded-xl font-bold uppercase tracking-widest text-xs hover:bg-primary/90 transition-all shadow-lg shadow-primary/20" style="">
+                  Save Internal Notes
+                </button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</div>
+</body></html>

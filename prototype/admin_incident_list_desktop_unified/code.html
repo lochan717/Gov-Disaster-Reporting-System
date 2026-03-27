@@ -1,0 +1,321 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>DMS Admin - Incident List</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ec5b13",
+                        "background-light": "#f8f6f6",
+                        "background-dark": "#221610",
+                    },
+                    fontFamily: {
+                        "display": ["Public Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100">
+<div class="relative flex h-screen w-full flex-col overflow-hidden">
+<!-- Header -->
+<header class="flex h-16 w-full items-center justify-between border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-6 shrink-0">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-3">
+<div class="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-white">
+<span class="material-symbols-outlined" style="">shield_person</span>
+</div>
+<h2 class="text-xl font-bold leading-tight tracking-tight text-slate-900 dark:text-white" style="">DMS Admin</h2>
+</div>
+<div class="hidden md:flex">
+<label class="relative flex h-10 w-64 items-center" style="">
+<span class="material-symbols-outlined absolute left-3 text-slate-400" style="">search</span>
+<input class="h-full w-full rounded-xl border-none bg-slate-100 dark:bg-slate-800 pl-10 pr-4 text-sm focus:ring-2 focus:ring-primary/50 text-slate-900 dark:text-white placeholder:text-slate-500" placeholder="Search incidents..." type="text">
+</label>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700" style="">
+<span class="material-symbols-outlined" style="">notifications</span>
+</button>
+<button class="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700" style="">
+<span class="material-symbols-outlined" style="">settings</span>
+</button>
+<div class="h-10 w-10 rounded-full border-2 border-primary/20 bg-cover bg-center bg-no-repeat" style="background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuACdsX2Xvdo_AxFWJAkbpnjSpN4ciQ8wJyA9qWxe-5lWXUP3sOr6Rg05MOjleO_ouEAAARQGykOXlnfDF4IJdSvfLOvD7nIOTg2-EffPXV09S10NMZa1zl52voOwi5EbBZyXVzrgmChMGXwz9hKdmSXUQC-WhBY0sdhS-t8GfGIFXgm0kBIuHYkGaQyxIBXaWcwdaIMnCJzQUHBP6gRTNenbWE84ZIXjwLIC10mOiExLoYakAxhqnZk7k5-9LD5o7qWhiIthVQkLaE&quot;);"></div>
+</div>
+</header>
+<div class="flex flex-1 overflow-hidden">
+<!-- Sidebar -->
+<aside class="w-64 border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex flex-col py-6 shrink-0">
+<nav class="flex-1 space-y-1 px-4">
+<a class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors" href="#" style="">
+<span class="material-symbols-outlined" style="">dashboard</span>
+<span class="text-sm font-medium" style="">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 rounded-xl bg-primary/10 px-4 py-3 text-primary transition-colors" href="#" style="">
+<span class="material-symbols-outlined" style="">warning</span>
+<span class="text-sm font-bold" style="">Incidents</span>
+</a>
+<a class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors" href="#" style="">
+<span class="material-symbols-outlined" style="">group</span>
+<span class="text-sm font-medium" style="">User Management</span>
+</a>
+<a class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors" href="#" style="">
+<span class="material-symbols-outlined" style="">bar_chart</span>
+<span class="text-sm font-medium" style="">Reporting</span>
+</a>
+<a class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors" href="#" style="">
+<span class="material-symbols-outlined" style="">database</span>
+<span class="text-sm font-medium" style="">System Logs</span>
+</a>
+</nav>
+<div class="px-4 mt-auto">
+<div class="rounded-xl bg-slate-50 dark:bg-slate-800 p-4">
+<p class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2" style=""><br></p>
+<div class="h-2 w-full rounded-full bg-slate-200 dark:bg-slate-700">
+<div class="h-full w-3/4 rounded-full bg-primary"></div>
+</div>
+<p class="mt-2 text-xs text-slate-500" style=""><br></p>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 overflow-y-auto bg-background-light dark:bg-background-dark p-8">
+<div class="mx-auto max-w-7xl">
+<!-- Title Section -->
+<div class="flex flex-wrap items-center justify-between gap-4 mb-8">
+<div>
+<h1 class="text-3xl font-bold tracking-tight text-slate-900 dark:text-white" style="">Incident List</h1>
+<p class="mt-1 text-slate-500" style="">Real-time oversight and management of active disaster responses.</p>
+</div>
+<button class="flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 font-bold text-white shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all" style="">
+<span class="material-symbols-outlined text-xl" style="">add_alert</span>
+<span class="" style="">Report Incident</span>
+</button>
+</div>
+<!-- Filters -->
+<div class="flex flex-wrap items-center gap-3 mb-6">
+<select class="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2 text-sm focus:ring-primary focus:border-primary">
+<option>Incident Type</option>
+<option>Fire</option>
+<option>Flood</option>
+</select>
+<select class="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2 text-sm focus:ring-primary focus:border-primary">
+<option>Status</option>
+<option>Open</option>
+<option>In Progress</option>
+</select>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm" style="">calendar_today</span>
+<input class="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 rounded-xl pl-10 pr-4 py-2 text-sm focus:ring-primary focus:border-primary" placeholder="Date Range" type="text">
+</div>
+<button class="px-4 py-2 text-slate-500 hover:text-primary font-medium text-sm transition-colors" style="">Reset</button>
+</div>
+<!-- Data Table -->
+<div class="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm overflow-hidden">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-slate-50 dark:bg-slate-800/50">
+<th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500" style="">Incident ID</th>
+<th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500" style="">Type</th>
+<th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500" style="">Location</th>
+<th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500" style="">Reported At</th>
+<th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500" style="">Status</th>
+<th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500" style="">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+<!-- Row 1 -->
+<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+<td class="px-6 py-4 whitespace-nowrap" style="">
+<a class="text-sm font-bold text-primary hover:underline" href="#" style="">#INC-9821</a>
+</td>
+<td class="px-6 py-4 whitespace-nowrap" style="">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-orange-500 text-lg" style="">local_fire_department</span>
+<span class="text-sm font-medium text-slate-900 dark:text-white" style="">Wildfire</span>
+</div>
+</td>
+<td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600 dark:text-slate-300" style="">North Ridge Heights</td>
+<td class="px-6 py-4 whitespace-nowrap" style="">
+<div class="text-sm font-medium text-slate-900 dark:text-white" style="">Oct 24, 2023</div>
+<div class="text-xs text-slate-500" style="">14:32 PM</div>
+</td>
+<td class="px-6 py-4 whitespace-nowrap" style="">
+<span class="inline-flex items-center gap-1.5 rounded-full bg-red-100 dark:bg-red-900/30 px-3 py-1 text-xs font-semibold text-red-700 dark:text-red-400" style="">
+<span class="h-1.5 w-1.5 rounded-full bg-red-500"></span>
+                                            Open
+                                        </span>
+</td>
+<td class="px-6 py-4 whitespace-nowrap" style="">
+<div class="flex items-center gap-3">
+<button class="text-slate-400 hover:text-primary transition-colors" title="View Details" style="">
+<span class="material-symbols-outlined" style="">visibility</span>
+</button>
+<button class="text-slate-400 hover:text-primary transition-colors" title="Edit Incident" style="">
+<span class="material-symbols-outlined" style="">edit</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+<td class="px-6 py-4 whitespace-nowrap" style="">
+<a class="text-sm font-bold text-primary hover:underline" href="#" style="">#INC-9819</a>
+</td>
+<td class="px-6 py-4 whitespace-nowrap" style="">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-blue-500 text-lg" style="">water_damage</span>
+<span class="text-sm font-medium text-slate-900 dark:text-white" style="">Flash Flood</span>
+</div>
+</td>
+<td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600 dark:text-slate-300" style="">Downtown Sector 4</td>
+<td class="px-6 py-4 whitespace-nowrap" style="">
+<div class="text-sm font-medium text-slate-900 dark:text-white" style="">Oct 24, 2023</div>
+<div class="text-xs text-slate-500" style="">11:15 AM</div>
+</td>
+<td class="px-6 py-4 whitespace-nowrap" style="">
+<span class="inline-flex items-center gap-1.5 rounded-full bg-amber-100 dark:bg-amber-900/30 px-3 py-1 text-xs font-semibold text-amber-700 dark:text-amber-400" style="">
+<span class="h-1.5 w-1.5 rounded-full bg-amber-500"></span>
+                                            In Progress
+                                        </span>
+</td>
+<td class="px-6 py-4 whitespace-nowrap" style="">
+<div class="flex items-center gap-3">
+<button class="text-slate-400 hover:text-primary transition-colors" title="View Details" style="">
+<span class="material-symbols-outlined" style="">visibility</span>
+</button>
+<button class="text-slate-400 hover:text-primary transition-colors" title="Edit Incident" style="">
+<span class="material-symbols-outlined" style="">edit</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+<td class="px-6 py-4 whitespace-nowrap" style="">
+<a class="text-sm font-bold text-primary hover:underline" href="#" style="">#INC-9815</a>
+</td>
+<td class="px-6 py-4 whitespace-nowrap" style="">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-emerald-500 text-lg" style="">medical_services</span>
+<span class="text-sm font-medium text-slate-900 dark:text-white" style="">Mass Casualty</span>
+</div>
+</td>
+<td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600 dark:text-slate-300" style="">Central Highway</td>
+<td class="px-6 py-4 whitespace-nowrap" style="">
+<div class="text-sm font-medium text-slate-900 dark:text-white" style="">Oct 23, 2023</div>
+<div class="text-xs text-slate-500" style="">22:05 PM</div>
+</td>
+<td class="px-6 py-4 whitespace-nowrap" style="">
+<span class="inline-flex items-center gap-1.5 rounded-full bg-slate-100 dark:bg-slate-800 px-3 py-1 text-xs font-semibold text-slate-500 dark:text-slate-400" style="">
+<span class="h-1.5 w-1.5 rounded-full bg-slate-400"></span>
+                                            Closed
+                                        </span>
+</td>
+<td class="px-6 py-4 whitespace-nowrap" style="">
+<div class="flex items-center gap-3">
+<button class="text-slate-400 hover:text-primary transition-colors" title="View Details" style="">
+<span class="material-symbols-outlined" style="">visibility</span>
+</button>
+<button class="text-slate-400 hover:text-primary transition-colors" title="Edit Incident" style="">
+<span class="material-symbols-outlined" style="">edit</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+<td class="px-6 py-4 whitespace-nowrap" style="">
+<a class="text-sm font-bold text-primary hover:underline" href="#" style="">#INC-9812</a>
+</td>
+<td class="px-6 py-4 whitespace-nowrap" style="">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-indigo-500 text-lg" style="">bolt</span>
+<span class="text-sm font-medium text-slate-900 dark:text-white" style="">Power Outage</span>
+</div>
+</td>
+<td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600 dark:text-slate-300" style="">East Industrial Zone</td>
+<td class="px-6 py-4 whitespace-nowrap" style="">
+<div class="text-sm font-medium text-slate-900 dark:text-white" style="">Oct 23, 2023</div>
+<div class="text-xs text-slate-500" style="">18:40 PM</div>
+</td>
+<td class="px-6 py-4 whitespace-nowrap" style="">
+<span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 dark:bg-emerald-900/30 px-3 py-1 text-xs font-semibold text-emerald-700 dark:text-emerald-400" style="">
+<span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+                                            Resolved
+                                        </span>
+</td>
+<td class="px-6 py-4 whitespace-nowrap" style="">
+<div class="flex items-center gap-3">
+<button class="text-slate-400 hover:text-primary transition-colors" title="View Details" style="">
+<span class="material-symbols-outlined" style="">visibility</span>
+</button>
+<button class="text-slate-400 hover:text-primary transition-colors" title="Edit Incident" style="">
+<span class="material-symbols-outlined" style="">edit</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="flex items-center justify-between border-t border-slate-100 dark:border-slate-800 px-6 py-4 bg-slate-50/50 dark:bg-slate-800/30">
+<p class="text-sm text-slate-500" style="">Showing <span class="font-medium text-slate-900 dark:text-white" style="">1</span> to <span class="font-medium text-slate-900 dark:text-white" style="">10</span> of <span class="font-medium text-slate-900 dark:text-white" style="">42</span> incidents</p>
+<div class="flex items-center gap-1">
+<button class="flex h-9 w-9 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700" style="">
+<span class="material-symbols-outlined" style="">chevron_left</span>
+</button>
+<button class="flex h-9 w-9 items-center justify-center rounded-lg bg-primary font-bold text-white shadow-sm" style="">1</button>
+<button class="flex h-9 w-9 items-center justify-center rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 font-medium" style="">2</button>
+<button class="flex h-9 w-9 items-center justify-center rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 font-medium" style="">3</button>
+<button class="flex h-9 w-9 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700" style="">
+<span class="material-symbols-outlined" style="">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Summary Cards -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+<div class="bg-white dark:bg-slate-900 p-5 rounded-xl border-l-4 border-red-500 shadow-sm flex items-center justify-between">
+<div>
+<p class="text-sm font-medium text-slate-500 dark:text-slate-400" style="">Critical Incidents</p>
+<h3 class="text-2xl font-bold text-slate-900 dark:text-white mt-1" style="">12</h3>
+</div>
+<div class="bg-red-50 dark:bg-red-900/20 p-3 rounded-lg text-red-500">
+<span class="material-symbols-outlined text-3xl" style="">emergency</span>
+</div>
+</div>
+<div class="bg-white dark:bg-slate-900 p-5 rounded-xl border-l-4 border-primary shadow-sm flex items-center justify-between">
+<div>
+<p class="text-sm font-medium text-slate-500 dark:text-slate-400" style="">Active Responses</p>
+<h3 class="text-2xl font-bold text-slate-900 dark:text-white mt-1" style="">28</h3>
+</div>
+<div class="bg-primary/10 p-3 rounded-lg text-primary">
+<span class="material-symbols-outlined text-3xl" style="">quick_reorder</span>
+</div>
+</div>
+<div class="bg-white dark:bg-slate-900 p-5 rounded-xl border-l-4 border-emerald-500 shadow-sm flex items-center justify-between">
+<div>
+<p class="text-sm font-medium text-slate-500 dark:text-slate-400" style="">Resolved Today</p>
+<h3 class="text-2xl font-bold text-slate-900 dark:text-white mt-1" style="">07</h3>
+</div>
+<div class="bg-emerald-50 dark:bg-emerald-900/20 p-3 rounded-lg text-emerald-500">
+<span class="material-symbols-outlined text-3xl" style="">task_alt</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,76 @@
+@{
+    ViewData["Title"] = "Manage Admins";
+    var initialAdmins = SAMVAD.DMS.Shared.Models.PaginatedResult<SAMVAD.DMS.Application.DTOs.User.AdminListItemDto>.Create(Array.Empty<SAMVAD.DMS.Application.DTOs.User.AdminListItemDto>(), 0, 1, 20);
+    var roleOptions = (ViewBag.RoleOptions as IEnumerable<string>) ?? Array.Empty<string>();
+    var districtOptions = (ViewBag.DistrictOptions as IEnumerable<SAMVAD.DMS.Application.DTOs.User.AdminDistrictOptionDto>) ?? Array.Empty<SAMVAD.DMS.Application.DTOs.User.AdminDistrictOptionDto>();
+}
+
+@Html.AntiForgeryToken()
+
+<div class="space-y-4">
+    <div class="flex items-center justify-between">
+        <h1 class="text-2xl font-bold text-slate-900">Manage Admins</h1>
+        <button type="button" id="openAddAdminPaneBtn" class="rounded-lg bg-orange-600 text-white px-3 py-2 text-sm font-semibold">Create Admin</button>
+    </div>
+
+    <div class="grid grid-cols-1 xl:grid-cols-3 gap-4">
+        <div class="xl:col-span-2 bg-white border border-slate-200 rounded-2xl p-5">
+            <div class="space-y-3 mb-4 border-b border-slate-200 pb-4">
+                <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                    <input type="search" id="adminsSearchInput" class="rounded-lg border border-slate-300 px-3 py-2 text-sm" placeholder="Search by name or email" />
+                    <select id="adminsStatusFilter" class="rounded-lg border border-slate-300 px-3 py-2 text-sm">
+                        <option value="">All statuses</option>
+                        <option value="true">Active</option>
+                        <option value="false">Inactive</option>
+                    </select>
+                    <select id="adminsRoleFilter" class="rounded-lg border border-slate-300 px-3 py-2 text-sm">
+                        <option value="">All roles</option>
+                        @foreach (var role in roleOptions)
+                        {
+                            <option value="@role">@role</option>
+                        }
+                    </select>
+                    <select id="adminsDistrictFilter" class="rounded-lg border border-slate-300 px-3 py-2 text-sm">
+                        <option value="">All districts</option>
+                        @foreach (var district in districtOptions)
+                        {
+                            <option value="@district.Id">@district.Name</option>
+                        }
+                    </select>
+                </div>
+                <div class="flex flex-wrap items-center gap-2">
+                    <button type="button" id="adminsApplyFiltersBtn" class="rounded-lg bg-slate-900 text-white px-3 py-2 text-sm font-semibold">Apply</button>
+                    <button type="button" id="adminsResetFiltersBtn" class="rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-700">Reset</button>
+                </div>
+            </div>
+            <div id="adminsListHost">
+                <partial name="_List" model="initialAdmins" />
+            </div>
+            <div class="mt-4 flex items-center justify-between gap-2 border-t border-slate-200 pt-4">
+                <button type="button" id="adminsPrevPageBtn" class="rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-700 disabled:opacity-50" disabled>Previous</button>
+                <div class="flex items-center gap-2">
+                    <label for="adminsPageSize" class="text-xs text-slate-500">Rows</label>
+                    <select id="adminsPageSize" class="rounded-lg border border-slate-300 px-2 py-1.5 text-xs">
+                        <option value="10">10</option>
+                        <option value="20" selected>20</option>
+                        <option value="50">50</option>
+                    </select>
+                </div>
+                <p id="adminsPaginationInfo" class="text-xs text-slate-500">Page 1 of 1</p>
+                <button type="button" id="adminsNextPageBtn" class="rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-700 disabled:opacity-50" disabled>Next</button>
+            </div>
+        </div>
+        <div id="adminSidePane" class="bg-white border border-slate-200 rounded-2xl p-5">
+            <p class="text-slate-500">Choose an action to manage admin details.</p>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="~/js/admins.js" asp-append-version="true"></script>
+}
+
+@section Styles {
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+}

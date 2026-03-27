@@ -1,0 +1,339 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>DMS Admin - Reports Hub</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ec5b13",
+                        "background-light": "#f8f6f6",
+                        "background-dark": "#221610",
+                    },
+                    fontFamily: {
+                        "display": ["Public Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style data-purpose="custom-scrollbars">
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100">
+<div class="relative flex h-screen w-full flex-col overflow-hidden">
+<!-- BEGIN: Header -->
+<header class="flex h-16 w-full items-center justify-between border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-6 shrink-0">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-3">
+<div class="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-white">
+<span class="material-symbols-outlined" style="">shield_person</span>
+</div>
+<h2 class="text-xl font-bold leading-tight tracking-tight text-slate-900 dark:text-white" style="">DMS Admin</h2>
+</div>
+<div class="hidden md:flex">
+<label class="relative flex h-10 w-64 items-center" style="">
+<span class="material-symbols-outlined absolute left-3 text-slate-400" style="">search</span>
+<input class="h-full w-full rounded-xl border-none bg-slate-100 dark:bg-slate-800 pl-10 pr-4 text-sm focus:ring-2 focus:ring-primary/50 text-slate-900 dark:text-white placeholder:text-slate-500" placeholder="Search reports..." value="">
+</label>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700" style="">
+<span class="material-symbols-outlined" style="">notifications</span>
+</button>
+<button class="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700" style="">
+<span class="material-symbols-outlined" style="">settings</span>
+</button>
+<div class="h-10 w-10 rounded-full border-2 border-primary/20 bg-cover bg-center bg-no-repeat" style="background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuDCpq5-8Kcp5Z9-8Q3eRPa98OEx1zRINjTG4ZuyCGP3P4erYTEckkI1AgAIz0c6KuuGV6x6UB3qP8QvgY6puQu2XktI3FunMhHXKlrG7tmwbI_WCHc-xhKudNEowwhUTzonKEB2OVZu-zBMnTNOEh5Dzus9oqaHBfft5OZPnausL1e_OkEzc8YKxFNvBfudZ_Bl1KFfE19z19p5Pyw7cm8ZuTY9hky_EiUVlgkEELU2sOvDwKyUzYXCLP2fvwy43tu2ItNFG0uvkA4&quot;);"></div>
+</div>
+</header>
+<!-- END: Header -->
+<div class="flex flex-1 overflow-hidden">
+<!-- BEGIN: Sidebar -->
+<aside class="w-64 border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex flex-col py-6 shrink-0">
+<nav class="flex-1 space-y-1 px-4">
+<a class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors" href="#" style="">
+<span class="material-symbols-outlined" style="">dashboard</span>
+<span class="text-sm font-medium" style="">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors" href="#" style="">
+<span class="material-symbols-outlined" style="">warning</span>
+<span class="text-sm font-medium" style="">Incidents</span>
+</a>
+<a class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors" href="#" style="">
+<span class="material-symbols-outlined" style="">group</span>
+<span class="text-sm font-medium" style="">User Management</span>
+</a>
+<a class="flex items-center gap-3 rounded-xl bg-primary/10 px-4 py-3 text-primary transition-colors" href="#" style="">
+<span class="material-symbols-outlined" style="">bar_chart</span>
+<span class="text-sm font-bold" style="">Reporting</span>
+</a>
+<a class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors" href="#" style="">
+<span class="material-symbols-outlined" style="">database</span>
+<span class="text-sm font-medium" style="">System Logs</span>
+</a>
+</nav>
+<div class="px-4 mt-auto">
+<div class="rounded-xl bg-slate-50 dark:bg-slate-800 p-4">
+<p class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2" style=""><br></p>
+<div class="h-2 w-full rounded-full bg-slate-200 dark:bg-slate-700">
+<div class="h-full w-3/4 rounded-full bg-primary"></div>
+</div>
+<p class="mt-2 text-xs text-slate-500" style=""><br></p>
+</div>
+</div>
+</aside>
+<!-- END: Sidebar -->
+<!-- BEGIN: Main Content -->
+<main class="flex-1 overflow-y-auto bg-background-light dark:bg-background-dark p-8">
+<div class="mx-auto max-w-7xl">
+<!-- Page Title -->
+<div class="flex flex-wrap items-center justify-between gap-4 mb-8">
+<div>
+<div class="flex items-center gap-2 mb-1">
+<button class="text-slate-400 hover:text-slate-600" style="">
+<span class="material-symbols-outlined text-xl" style="">arrow_back</span>
+</button>
+<h1 class="text-3xl font-bold tracking-tight text-slate-900 dark:text-white" style="">Reports Hub</h1>
+</div>
+<p class="text-slate-500" style="">Analysis and monitoring of regional disaster management activity</p>
+</div>
+<div class="flex items-center gap-2">
+<div class="text-right mr-4 hidden sm:block">
+<p class="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white" style="">OP_MANGAN</p>
+<p class="text-[10px] text-slate-500 uppercase" style="">Operator</p>
+</div>
+<button class="flex items-center gap-2 rounded-xl bg-slate-100 dark:bg-slate-800 px-5 py-2.5 font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all" style="">
+<span class="material-symbols-outlined" style="">logout</span>
+</button>
+</div>
+</div>
+<!-- Filters -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
+<div class="space-y-1.5">
+<label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest" style="">District</label>
+<select class="w-full form-select border-slate-200 dark:border-slate-800 rounded-xl text-sm bg-white dark:bg-slate-900 focus:ring-primary focus:border-primary text-slate-700 dark:text-slate-300">
+<option>MANGAN</option>
+<option>GANGTOK</option>
+<option>NAMCHI</option>
+</select>
+</div>
+<div class="space-y-1.5">
+<label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest" style="">Status</label>
+<select class="w-full form-select border-slate-200 dark:border-slate-800 rounded-xl text-sm bg-white dark:bg-slate-900 focus:ring-primary focus:border-primary text-slate-700 dark:text-slate-300">
+<option>ALL STATUS</option>
+<option>OPEN</option>
+<option>IN PROGRESS</option>
+<option>CLOSED</option>
+</select>
+</div>
+<div class="space-y-1.5">
+<label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest" style="">Incident Type</label>
+<select class="w-full form-select border-slate-200 dark:border-slate-800 rounded-xl text-sm bg-white dark:bg-slate-900 focus:ring-primary focus:border-primary text-slate-700 dark:text-slate-300">
+<option>ALL TYPES</option>
+<option>FLOOD</option>
+<option>LANDSLIDE</option>
+<option>FIRE</option>
+</select>
+</div>
+<div class="lg:col-span-2 flex flex-col gap-1.5">
+<label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest" style="">Timeframe</label>
+<div class="flex items-center gap-2">
+<input class="w-full form-input border-slate-200 dark:border-slate-800 rounded-xl text-sm bg-white dark:bg-slate-900 focus:ring-primary focus:border-primary text-slate-700 dark:text-slate-300" type="date">
+<span class="text-slate-400 text-xs font-bold" style="">to</span>
+<input class="w-full form-input border-slate-200 dark:border-slate-800 rounded-xl text-sm bg-white dark:bg-slate-900 focus:ring-primary focus:border-primary text-slate-700 dark:text-slate-300" type="date">
+</div>
+</div>
+</div>
+<!-- Tabs -->
+<div class="flex gap-8 mb-8 border-b border-slate-200 dark:border-slate-800">
+<button class="pb-4 border-b-2 border-primary text-primary font-bold text-sm" style="">Insights Dashboard</button>
+<button class="pb-4 border-b-2 border-transparent text-slate-500 font-bold text-sm hover:text-slate-800 dark:hover:text-white" style="">Data Explorer</button>
+<button class="pb-4 border-b-2 border-transparent text-slate-500 font-bold text-sm hover:text-slate-800 dark:hover:text-white" style="">PDF Reports</button>
+</div>
+<!-- KPI Cards -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+<div class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+<p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1" style="">Total Incidents</p>
+<div class="flex items-baseline gap-2">
+<span class="text-4xl font-extrabold text-slate-900 dark:text-white" style="">2</span>
+</div>
+</div>
+<div class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+<p class="text-[10px] font-bold text-primary uppercase tracking-widest mb-1" style="">Active Emergencies</p>
+<div class="flex items-baseline gap-2">
+<span class="text-4xl font-extrabold text-primary" style="">0</span>
+</div>
+</div>
+<div class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+<p class="text-[10px] font-bold text-emerald-500 uppercase tracking-widest mb-1" style="">Resolved Cases</p>
+<div class="flex items-baseline gap-2">
+<span class="text-4xl font-extrabold text-emerald-500" style="">0</span>
+</div>
+</div>
+<div class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+<p class="text-[10px] font-bold text-blue-500 uppercase tracking-widest mb-1" style="">Avg Response Time</p>
+<div class="flex items-baseline gap-1">
+<span class="text-4xl font-extrabold text-slate-900 dark:text-white" style="">22</span>
+<span class="text-slate-400 text-sm font-semibold" style="">min</span>
+</div>
+</div>
+</div>
+<!-- Analytics Section -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+<div class="bg-white dark:bg-slate-900 p-8 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col items-center">
+<div class="w-full flex justify-between items-center mb-8">
+<h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest" style="">Incidents by Type</h3>
+</div>
+<div class="relative w-full max-w-[300px] aspect-square flex flex-col items-center justify-center">
+<canvas class="w-full h-full" id="incidentDonut" width="300" height="300"></canvas>
+</div>
+<div class="flex gap-8 mt-6">
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-primary"></div>
+<span class="text-xs font-bold text-slate-600 dark:text-slate-400 tracking-widest uppercase" style="">Flood</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-blue-500"></div>
+<span class="text-xs font-bold text-slate-600 dark:text-slate-400 tracking-widest uppercase" style="">Landslide</span>
+</div>
+</div>
+</div>
+<div class="bg-white dark:bg-slate-900 p-8 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+<div class="w-full flex justify-between items-center mb-8">
+<h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest" style="">Trends by District</h3>
+</div>
+<div class="flex h-[250px] w-full items-end gap-2 border-l border-b border-slate-200 dark:border-slate-800 pl-4 pb-4 relative">
+<div class="absolute inset-0 flex flex-col justify-between pointer-events-none text-[10px] text-slate-300 dark:text-slate-700 -left-6 pb-4">
+<span class="" style="">2.0</span><span class="" style="">1.5</span><span class="" style="">1.0</span><span class="" style="">0.5</span><span class="" style="">0</span>
+</div>
+<div class="flex-1 flex flex-col items-center justify-end group px-4">
+<div class="w-full bg-primary/20 dark:bg-primary/10 border-t-2 border-primary rounded-t-lg transition-all hover:bg-primary/30" style="height: 100%;"></div>
+<p class="absolute -bottom-6 text-xs text-slate-500 font-semibold" style="">Mangan</p>
+</div>
+<div class="flex-1 flex flex-col items-center justify-end group px-4">
+<div class="w-full bg-slate-100 dark:bg-slate-800 rounded-t-lg transition-all" style="height: 10%;"></div>
+<p class="absolute -bottom-6 text-xs text-slate-500 font-semibold" style="">Gangtok</p>
+</div>
+<div class="flex-1 flex flex-col items-center justify-end group px-4">
+<div class="w-full bg-slate-100 dark:bg-slate-800 rounded-t-lg transition-all" style="height: 5%;"></div>
+<p class="absolute -bottom-6 text-xs text-slate-500 font-semibold" style="">Namchi</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Incident List -->
+<div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+<div class="p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50/50 dark:bg-slate-800/30">
+<h3 class="text-sm font-bold text-slate-800 dark:text-white uppercase tracking-wider" style="">Incoming Disaster List (Real-time)</h3>
+<span class="px-2 py-0.5 bg-primary text-[10px] text-white rounded font-bold animate-pulse uppercase" style="">Live</span>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead>
+<tr class="bg-slate-50/50 dark:bg-slate-800/20">
+<th class="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest" style="">Incident ID</th>
+<th class="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest" style="">Type</th>
+<th class="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest" style="">Location</th>
+<th class="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest" style="">Time</th>
+<th class="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest" style="">Status</th>
+<th class="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest text-right" style="">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+<td class="px-6 py-4 font-bold text-slate-700 dark:text-slate-300" style="">#INC-9821</td>
+<td class="px-6 py-4" style="">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-lg text-[10px] font-bold bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 uppercase" style="">Landslide</span>
+</td>
+<td class="px-6 py-4 text-xs font-medium text-slate-600 dark:text-slate-400" style="">Mangan - Sector 4</td>
+<td class="px-6 py-4 text-xs text-slate-500" style="">14:20 PM</td>
+<td class="px-6 py-4" style="">
+<span class="flex items-center gap-1.5 text-amber-600 dark:text-amber-400 font-bold text-xs uppercase" style="">
+<span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                                        In Progress
+                                    </span>
+</td>
+<td class="px-6 py-4 text-right" style="">
+<button class="text-primary font-bold text-xs hover:underline uppercase" style="">View Details</button>
+</td>
+</tr>
+<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+<td class="px-6 py-4 font-bold text-slate-700 dark:text-slate-300" style="">#INC-9819</td>
+<td class="px-6 py-4" style="">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-lg text-[10px] font-bold bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 uppercase" style="">Flood</span>
+</td>
+<td class="px-6 py-4 text-xs font-medium text-slate-600 dark:text-slate-400" style="">Mangan - Riverside</td>
+<td class="px-6 py-4 text-xs text-slate-500" style="">13:05 PM</td>
+<td class="px-6 py-4" style="">
+<span class="flex items-center gap-1.5 text-slate-400 font-bold text-xs uppercase" style="">
+<span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+                                        Open
+                                    </span>
+</td>
+<td class="px-6 py-4 text-right" style="">
+<button class="text-primary font-bold text-xs hover:underline uppercase" style="">View Details</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</main>
+<!-- END: Main Content -->
+</div>
+</div>
+<!-- BEGIN: Charts Logic -->
+<script>
+    window.addEventListener('load', () => {
+        const canvas = document.getElementById('incidentDonut');
+        if (!canvas) return;
+        
+        const ctx = canvas.getContext('2d');
+        const dpr = window.devicePixelRatio || 1;
+        const size = 300;
+        canvas.width = size * dpr;
+        canvas.height = size * dpr;
+        ctx.scale(dpr, dpr);
+
+        const centerX = size / 2;
+        const centerY = size / 2;
+        const radius = size * 0.35;
+        const thickness = 35;
+
+        // Draw Donut
+        // Landslide (Blue)
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, radius, 1.5 * Math.PI, 0.5 * Math.PI); 
+        ctx.lineWidth = thickness;
+        ctx.strokeStyle = '#3b82f6';
+        ctx.stroke();
+
+        // Flood (Primary Red/Orange)
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, radius, 0.5 * Math.PI, 1.5 * Math.PI); 
+        ctx.lineWidth = thickness;
+        ctx.strokeStyle = '#ec5b13';
+        ctx.stroke();
+    });
+</script>
+<!-- END: Charts Logic -->
+</body></html>

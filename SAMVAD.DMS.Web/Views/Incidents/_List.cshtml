@@ -1,0 +1,62 @@
+@model SAMVAD.DMS.Shared.Models.PaginatedResult<SAMVAD.DMS.Application.DTOs.Incident.IncidentListItemDto>
+
+<div id="incidentsListMeta" data-page="@Model.Page" data-page-size="@Model.PageSize" data-total-count="@Model.TotalCount" data-total-pages="@Model.TotalPages" data-has-previous="@Model.HasPreviousPage.ToString().ToLowerInvariant()" data-has-next="@Model.HasNextPage.ToString().ToLowerInvariant()"></div>
+
+<div class="space-y-3 md:hidden">
+@if (!Model.Items.Any())
+{
+    <article class="rounded-2xl border border-dashed border-slate-300 p-4 bg-slate-50 text-sm text-slate-500">No incidents found for the selected filters.</article>
+}
+@foreach (var item in Model.Items)
+{
+    <article class="rounded-2xl border border-slate-200 p-4 bg-white shadow-sm" data-incident-row-id="@item.Id">
+        <div class="flex items-start justify-between gap-3">
+            <button type="button" class="text-sm font-semibold text-orange-700 hover:underline incident-detail-btn" data-incident-id="@item.Id">
+                @item.IncidentId
+            </button>
+            <span class="inline-flex items-center rounded-full bg-slate-100 text-slate-700 px-2 py-1 text-xs font-semibold">@item.Status</span>
+        </div>
+
+        <div class="mt-2 grid grid-cols-2 gap-2 text-xs text-slate-600">
+            <p><span class="font-semibold text-slate-700">Type:</span> @item.DisasterType</p>
+            <p><span class="font-semibold text-slate-700">Priority:</span> @item.Priority</p>
+        </div>
+
+        <div class="mt-4">
+            <a asp-action="ExportPdf" asp-route-id="@item.Id" class="text-xs font-semibold text-slate-700 hover:text-orange-700">Export PDF</a>
+        </div>
+    </article>
+}
+</div>
+
+<div class="hidden md:block overflow-x-auto">
+    <table class="w-full text-left">
+        <thead>
+            <tr class="text-xs uppercase text-slate-500">
+                <th class="py-2">Incident ID</th>
+                <th>Type</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th class="text-right">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model.Items)
+        {
+            <tr class="border-t border-slate-100 text-sm text-slate-700" data-incident-row-id="@item.Id">
+                <td class="py-2 font-semibold">
+                    <button type="button" class="text-orange-700 hover:underline incident-detail-btn" data-incident-id="@item.Id">
+                        @item.IncidentId
+                    </button>
+                </td>
+                <td>@item.DisasterType</td>
+                <td>@item.Priority</td>
+                <td>@item.Status</td>
+                <td class="text-right">
+                    <a asp-action="ExportPdf" asp-route-id="@item.Id" class="text-xs font-semibold text-slate-700 hover:text-orange-700">Export PDF</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>

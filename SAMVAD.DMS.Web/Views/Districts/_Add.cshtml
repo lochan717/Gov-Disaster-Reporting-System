@@ -1,0 +1,15 @@
+@model SAMVAD.DMS.Application.DTOs.District.DistrictRequestDto
+
+<form id="addDistrictForm" class="space-y-3">
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="ModelOnly" class="text-xs text-rose-600"></div>
+    <input asp-for="Name" class="w-full rounded-xl border-slate-300" placeholder="District Name" />
+    <span asp-validation-for="Name" class="text-xs text-rose-600"></span>
+    <input asp-for="Code" class="w-full rounded-xl border-slate-300" placeholder="Code" />
+    <span asp-validation-for="Code" class="text-xs text-rose-600"></span>
+    <input asp-for="State" class="w-full rounded-xl border-slate-300" placeholder="State" />
+    <span asp-validation-for="State" class="text-xs text-rose-600"></span>
+    <div class="flex justify-end">
+        <button type="button" id="saveDistrictBtn" class="rounded-lg bg-orange-600 text-white px-3 py-2 text-sm font-semibold">Save District</button>
+    </div>
+</form>

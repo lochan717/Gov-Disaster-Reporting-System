@@ -1,0 +1,153 @@
+@model SAMVAD.DMS.Application.DTOs.Incident.IncidentPublicSubmitDto
+@{
+    Layout = "_PublicLayout";
+    ViewData["Title"] = "Report Incident";
+    var districtOptions = ViewBag.PublicDistrictOptions as IReadOnlyCollection<SAMVAD.DMS.Application.DTOs.District.DistrictPublicOptionDto> ?? Array.Empty<SAMVAD.DMS.Application.DTOs.District.DistrictPublicOptionDto>();
+}
+
+<div class="max-w-2xl mx-auto p-4 md:p-6">
+    <div class="bg-white rounded-3xl border border-slate-200 p-5 md:p-6 shadow-sm">
+        <div class="flex items-center justify-between mb-3">
+            <div>
+                <h1 class="text-2xl font-extrabold text-[#ec5b13]">Disaster Reporting</h1>
+                <p class="text-sm text-slate-600">Citizens can submit from any district using this common form.</p>
+            </div>
+            <span id="reportStepLabel" class="text-xs font-bold text-[#ec5b13]">Step 1 of 3</span>
+        </div>
+
+        <div class="w-full bg-orange-100 rounded-full h-2 mb-6">
+            <div id="reportProgressBar" class="bg-[#ec5b13] h-2 rounded-full transition-all duration-200 w-1/3"></div>
+        </div>
+
+        <form id="publicReportForm" method="post" enctype="multipart/form-data" class="space-y-5">
+        @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-sm text-rose-600"></div>
+
+            <input asp-for="DisasterType" type="hidden" id="reportDisasterType" />
+            <input asp-for="Priority" type="hidden" id="reportPriority" />
+
+            <section data-step="1" class="space-y-5">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900">What happened?</h2>
+                    <p class="text-sm text-slate-500">Select disaster type and urgency.</p>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-3" id="disasterTypeGrid">
+                    <button type="button" class="report-disaster-btn rounded-2xl border border-slate-200 p-3 text-left" data-value="1">
+                        <p class="text-2xl">⛰️</p><p class="font-semibold mt-1">Landslide</p>
+                    </button>
+                    <button type="button" class="report-disaster-btn rounded-2xl border border-slate-200 p-3 text-left" data-value="2">
+                        <p class="text-2xl">🌊</p><p class="font-semibold mt-1">Flood</p>
+                    </button>
+                    <button type="button" class="report-disaster-btn rounded-2xl border border-slate-200 p-3 text-left" data-value="3">
+                        <p class="text-2xl">🔥</p><p class="font-semibold mt-1">Fire</p>
+                    </button>
+                    <button type="button" class="report-disaster-btn rounded-2xl border border-slate-200 p-3 text-left" data-value="4">
+                        <p class="text-2xl">🌍</p><p class="font-semibold mt-1">Earthquake</p>
+                    </button>
+                    <button type="button" class="report-disaster-btn rounded-2xl border border-slate-200 p-3 text-left" data-value="5">
+                        <p class="text-2xl">🚧</p><p class="font-semibold mt-1">Road Blockage</p>
+                    </button>
+                    <button type="button" class="report-disaster-btn rounded-2xl border border-slate-200 p-3 text-left" data-value="6">
+                        <p class="text-2xl">⚠️</p><p class="font-semibold mt-1">Others</p>
+                    </button>
+                </div>
+                <span asp-validation-for="DisasterType" class="text-xs text-rose-600"></span>
+
+                <div>
+                    <p class="text-sm font-semibold text-slate-700 mb-2">Priority</p>
+                    <div class="grid grid-cols-2 gap-3" id="priorityGrid">
+                        <button type="button" class="report-priority-btn rounded-xl border border-slate-200 px-3 py-3 text-sm font-semibold" data-value="1">Standard</button>
+                        <button type="button" class="report-priority-btn rounded-xl border border-rose-200 bg-rose-50 text-rose-700 px-3 py-3 text-sm font-semibold" data-value="2">Emergency</button>
+                    </div>
+                    <span asp-validation-for="Priority" class="text-xs text-rose-600"></span>
+                </div>
+            </section>
+
+            <section data-step="2" class="space-y-5 hidden">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900">Location and Evidence</h2>
+                    <p class="text-sm text-slate-500">Select district, add location and media files (max 5).</p>
+                </div>
+
+                <div>
+                    <label asp-for="DistrictId" class="block text-sm font-semibold text-slate-700 mb-1">District</label>
+                    <select asp-for="DistrictId" class="w-full rounded-xl border-slate-300">
+                        <option value="">Select district</option>
+                        @foreach (var district in districtOptions)
+                        {
+                            <option value="@district.Id">@district.Name (@district.Code)</option>
+                        }
+                    </select>
+                    <span asp-validation-for="DistrictId" class="text-xs text-rose-600"></span>
+                </div>
+
+                <div>
+                    <label asp-for="LocationText" class="block text-sm font-semibold text-slate-700 mb-1">Location (Text)</label>
+                    <input asp-for="LocationText" class="w-full rounded-xl border-slate-300" placeholder="Area, landmark, road, village" />
+                    <span asp-validation-for="LocationText" class="text-xs text-rose-600"></span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                        <label asp-for="LocationGpsLat" class="block text-sm font-semibold text-slate-700 mb-1">Latitude</label>
+                        <input asp-for="LocationGpsLat" class="w-full rounded-xl border-slate-300" placeholder="Auto-captured or manual" />
+                        <span asp-validation-for="LocationGpsLat" class="text-xs text-rose-600"></span>
+                    </div>
+                    <div>
+                        <label asp-for="LocationGpsLng" class="block text-sm font-semibold text-slate-700 mb-1">Longitude</label>
+                        <input asp-for="LocationGpsLng" class="w-full rounded-xl border-slate-300" placeholder="Auto-captured or manual" />
+                        <span asp-validation-for="LocationGpsLng" class="text-xs text-rose-600"></span>
+                    </div>
+                </div>
+
+                <button type="button" id="captureGpsBtn" class="rounded-xl border border-sky-200 bg-sky-50 px-4 py-2 text-sm font-semibold text-sky-700">Use Current GPS Location</button>
+
+                <div>
+                    <label for="reportMediaFiles" class="block text-sm font-semibold text-slate-700 mb-1">Media (Photo/Video)</label>
+                    <input id="reportMediaFiles" name="mediaFiles" type="file" multiple accept="image/*,video/*" class="w-full rounded-xl border-slate-300" />
+                    <p class="text-xs text-slate-500 mt-1">Up to 5 files.</p>
+                    <p id="mediaCountHint" class="text-xs text-slate-500 mt-1"></p>
+                </div>
+
+                <div>
+                    <label asp-for="Details" class="block text-sm font-semibold text-slate-700 mb-1">More Details</label>
+                    <textarea asp-for="Details" rows="4" class="w-full rounded-xl border-slate-300" placeholder="Briefly describe the situation"></textarea>
+                    <span asp-validation-for="Details" class="text-xs text-rose-600"></span>
+                </div>
+            </section>
+
+            <section data-step="3" class="space-y-4 hidden">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900">Review and Submit</h2>
+                    <p class="text-sm text-slate-500">Confirm contact details to receive tracking SMS.</p>
+                </div>
+
+                <div class="rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm text-slate-700 space-y-2">
+                    <p><span class="font-semibold">District:</span> <span id="reviewDistrict">-</span></p>
+                    <p><span class="font-semibold">Disaster Type:</span> <span id="reviewDisasterType">-</span></p>
+                    <p><span class="font-semibold">Priority:</span> <span id="reviewPriority">-</span></p>
+                    <p><span class="font-semibold">Location:</span> <span id="reviewLocation">-</span></p>
+                    <p><span class="font-semibold">GPS:</span> <span id="reviewGps">-</span></p>
+                    <p><span class="font-semibold">Media Files:</span> <span id="reviewMedia">0</span></p>
+                </div>
+
+                <div>
+                    <label asp-for="MobileNumber" class="block text-sm font-semibold text-slate-700 mb-1">Mobile Number</label>
+                    <input asp-for="MobileNumber" class="w-full rounded-xl border-slate-300" placeholder="10-digit mobile number" />
+                    <span asp-validation-for="MobileNumber" class="text-xs text-rose-600"></span>
+                </div>
+            </section>
+
+            <div class="flex items-center gap-3 pt-2">
+                <button type="button" id="reportPrevStepBtn" class="hidden rounded-xl border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700">Back</button>
+                <button type="button" id="reportNextStepBtn" class="rounded-xl bg-[#ec5b13] px-4 py-2 text-sm font-semibold text-white">Next</button>
+                <button type="submit" id="reportSubmitBtn" class="hidden rounded-xl bg-[#ec5b13] px-4 py-2 text-sm font-semibold text-white">Submit Report</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/public-report.js" asp-append-version="true"></script>
+}

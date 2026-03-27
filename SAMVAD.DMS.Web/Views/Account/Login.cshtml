@@ -1,0 +1,30 @@
+@model SAMVAD.DMS.Application.DTOs.Auth.LoginRequestDto
+@{
+    Layout = "_PublicLayout";
+    ViewData["Title"] = "Login";
+}
+
+<div class="min-h-screen flex items-center justify-center p-6">
+    <div class="w-full max-w-md bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-4">
+        <h1 class="text-2xl font-bold text-slate-900">Admin Login</h1>
+        <form method="post" class="space-y-4">
+            @Html.AntiForgeryToken()
+            <div>
+                <label asp-for="Email" class="block text-sm font-semibold text-slate-700"></label>
+                <input asp-for="Email" class="mt-1 w-full rounded-xl border-slate-300" />
+                <span asp-validation-for="Email" class="text-red-600 text-xs"></span>
+            </div>
+            <div>
+                <label asp-for="Password" class="block text-sm font-semibold text-slate-700"></label>
+                <input asp-for="Password" type="password" class="mt-1 w-full rounded-xl border-slate-300" />
+                <span asp-validation-for="Password" class="text-red-600 text-xs"></span>
+            </div>
+            <button type="submit" class="w-full py-3 rounded-xl bg-orange-600 text-white font-bold">Login</button>
+            <a asp-action="ForgotPassword" class="text-sm font-semibold text-orange-700">Forgot Password?</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

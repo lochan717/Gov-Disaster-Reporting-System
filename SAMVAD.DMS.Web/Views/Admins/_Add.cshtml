@@ -1,0 +1,42 @@
+@model SAMVAD.DMS.Application.DTOs.User.CreateAdminDto
+@{
+    var roleOptions = ViewBag.RoleOptions as IReadOnlyCollection<string> ?? Array.Empty<string>();
+    var districtOptions = ViewBag.DistrictOptions as IReadOnlyCollection<SAMVAD.DMS.Application.DTOs.User.AdminDistrictOptionDto> ?? Array.Empty<SAMVAD.DMS.Application.DTOs.User.AdminDistrictOptionDto>();
+}
+
+<form id="addAdminForm" class="space-y-3">
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="ModelOnly" class="text-xs text-rose-600"></div>
+    <input asp-for="Name" class="w-full rounded-xl border-slate-300" placeholder="Name" />
+    <span asp-validation-for="Name" class="text-xs text-rose-600"></span>
+    <input asp-for="Email" class="w-full rounded-xl border-slate-300" placeholder="Email" />
+    <span asp-validation-for="Email" class="text-xs text-rose-600"></span>
+
+    <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1">Role</label>
+        <select asp-for="RoleLabel" class="w-full rounded-xl border-slate-300">
+            <option value="">Select role</option>
+            @foreach (var role in roleOptions)
+            {
+                <option value="@role">@role</option>
+            }
+        </select>
+        <span asp-validation-for="RoleLabel" class="text-xs text-rose-600"></span>
+    </div>
+
+    <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1">Assigned Districts</label>
+        <select id="addAdminDistrictIds" asp-for="AssignedDistrictIds" class="w-full rounded-xl border-slate-300 min-h-[160px]" multiple>
+            @foreach (var district in districtOptions)
+            {
+                <option value="@district.Id">@district.Name</option>
+            }
+        </select>
+        <span asp-validation-for="AssignedDistrictIds" class="text-xs text-rose-600"></span>
+        <p class="mt-1 text-xs text-slate-500">Hold Ctrl (or Cmd on Mac) to select multiple districts.</p>
+    </div>
+
+    <div class="flex justify-end">
+        <button type="button" id="saveAdminBtn" class="rounded-lg bg-orange-600 text-white px-3 py-2 text-sm font-semibold">Save Admin</button>
+    </div>
+</form>

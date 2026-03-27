@@ -1,0 +1,33 @@
+@model SAMVAD.DMS.Application.DTOs.Incident.IncidentDetailDto
+
+@if (Model is null)
+{
+    <p class="text-slate-500">Select an incident to view details.</p>
+}
+else
+{
+    @Html.AntiForgeryToken()
+    <div class="space-y-2">
+        <h2 class="text-lg font-bold">@Model.IncidentId</h2>
+        <p class="text-sm text-slate-700">Type: @Model.DisasterType</p>
+        <p class="text-sm text-slate-700">Status: @Model.Status</p>
+        <p class="text-sm text-slate-700">Location: @Model.LocationText</p>
+
+        <div class="pt-3 border-t border-slate-200 space-y-2">
+            <label class="block text-sm font-semibold text-slate-700">Update Status</label>
+            <select id="incidentStatusSelect" class="w-full rounded-xl border-slate-300">
+                <option value="1">Open</option>
+                <option value="2">In Progress</option>
+                <option value="3">Closed</option>
+            </select>
+            <textarea id="incidentStatusNote" rows="3" class="w-full rounded-xl border-slate-300" placeholder="Note (required for Closed)"></textarea>
+            <button type="button" class="rounded-lg bg-orange-600 text-white px-3 py-2 text-sm font-semibold" id="updateIncidentStatusBtn" data-incident-id="@Model.Id">Update</button>
+        </div>
+
+        <div class="pt-3 border-t border-slate-200 space-y-2">
+            <label class="block text-sm font-semibold text-slate-700">Add Comment</label>
+            <textarea id="incidentCommentBody" rows="3" class="w-full rounded-xl border-slate-300" placeholder="Write comment"></textarea>
+            <button type="button" class="rounded-lg bg-slate-800 text-white px-3 py-2 text-sm font-semibold" id="addIncidentCommentBtn" data-incident-id="@Model.Id">Post Comment</button>
+        </div>
+    </div>
+}

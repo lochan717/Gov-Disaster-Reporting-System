@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Emergency Service - Disaster Reporting</title>
+<!-- Tailwind CSS v3 with plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style data-purpose="custom-fonts">
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #F9FAFB;
+    }
+  </style>
+<style data-purpose="custom-ui-elements">
+    .step-indicator {
+      height: 4px;
+      border-radius: 2px;
+    }
+    .incident-card {
+      transition: all 0.2s ease-in-out;
+    }
+    .incident-card.selected {
+      border: 2px solid #E11D48;
+      background-color: #FFF1F2;
+    }
+    .hide-step {
+      display: none;
+    }
+  </style>
+</head>
+<body class="max-w-md mx-auto min-h-screen shadow-lg bg-gray-50">
+<!-- BEGIN: MainHeader -->
+<header class="bg-[#D32F2F] text-white p-6 pb-10 rounded-b-[2rem] relative">
+<div class="flex justify-between items-center">
+<div>
+<h1 class="text-2xl font-extrabold tracking-tight">Emergency Service</h1>
+<p class="text-sm opacity-90 font-medium">Disaster Reporting Module</p>
+</div>
+<button aria-label="Notifications" class="bg-white/20 p-3 rounded-full hover:bg-white/30 transition-colors">
+<svg class="h-6 w-6" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+</div>
+</header>
+<!-- END: MainHeader -->
+<!-- BEGIN: FormContent -->
+<main class="px-6 -mt-6">
+<div class="bg-white rounded-3xl p-6 shadow-sm min-h-[70vh] flex flex-col">
+<!-- BEGIN: StepProgress -->
+<div class="mb-8">
+<div class="flex gap-2 mb-2">
+<div class="step-indicator bg-[#D32F2F] flex-1"></div>
+<div class="step-indicator bg-gray-200 flex-1" id="step-2-indicator"></div>
+<div class="step-indicator bg-gray-200 flex-1" id="step-3-indicator"></div>
+</div>
+<div class="text-right">
+<span class="text-sm font-bold text-gray-500" id="step-counter">Step 1 of 3</span>
+</div>
+</div>
+<!-- END: StepProgress -->
+<!-- BEGIN: Step1_IncidentType -->
+<section data-purpose="incident-selection" id="step-1">
+<h2 class="text-2xl font-extrabold text-slate-800 mb-2">What happened?</h2>
+<p class="text-gray-500 mb-8 font-medium">Select the type of incident to report.</p>
+<div class="grid grid-cols-2 gap-4 mb-4">
+<!-- Fire -->
+<button class="incident-card selected flex flex-col items-center justify-center p-6 border-2 border-rose-600 bg-rose-50 rounded-2xl shadow-sm" data-purpose="incident-button">
+<span class="text-4xl mb-3">🔥</span>
+<span class="font-bold text-slate-800">Fire</span>
+</button>
+<!-- Flood -->
+<button class="incident-card flex flex-col items-center justify-center p-6 border-2 border-gray-100 bg-white rounded-2xl shadow-sm hover:border-rose-200" data-purpose="incident-button">
+<span class="text-4xl mb-3">🌊</span>
+<span class="font-bold text-slate-800">Flood</span>
+</button>
+<!-- Landslide -->
+<button class="incident-card flex flex-col items-center justify-center p-6 border-2 border-gray-100 bg-white rounded-2xl shadow-sm hover:border-rose-200" data-purpose="incident-button">
+<span class="text-4xl mb-3">⛰️</span>
+<span class="font-bold text-slate-800">Landslide</span>
+</button>
+<!-- Accident -->
+<button class="incident-card flex flex-col items-center justify-center p-6 border-2 border-gray-100 bg-white rounded-2xl shadow-sm hover:border-rose-200" data-purpose="incident-button">
+<span class="text-4xl mb-3">🚑</span>
+<span class="font-bold text-slate-800">Accident</span>
+</button>
+</div>
+<!-- Other -->
+<button class="w-full flex items-center justify-center gap-3 p-5 border-2 border-gray-100 bg-white rounded-2xl shadow-sm mb-8 font-bold text-slate-800 hover:border-rose-200" data-purpose="incident-button">
+<span class="text-xl">⚠️</span>
+          Other / Not Listed
+        </button>
+</section>
+<!-- END: Step1_IncidentType -->
+<!-- BEGIN: Step2_LocationMedia -->
+<section class="hide-step" data-purpose="location-and-media" id="step-2">
+<!-- Media Upload Options -->
+<div class="grid grid-cols-2 gap-4 mb-8">
+<button class="flex flex-col items-center justify-center p-6 bg-white border border-gray-100 rounded-3xl shadow-[0_4px_20px_rgba(0,0,0,0.05)]">
+<div class="bg-rose-50 p-4 rounded-2xl mb-3">
+<span class="text-3xl">📸</span>
+</div>
+<span class="font-bold text-sm text-slate-800">Live Camera</span>
+</button>
+<button class="flex flex-col items-center justify-center p-6 bg-white border border-gray-100 rounded-3xl shadow-[0_4px_20px_rgba(0,0,0,0.05)]">
+<div class="bg-blue-50 p-4 rounded-2xl mb-3">
+<span class="text-3xl">🖼️</span>
+</div>
+<span class="font-bold text-sm text-slate-800">Gallery / Files</span>
+</button>
+</div>
+<!-- More Details Section -->
+<div class="mb-8">
+<h3 class="text-lg font-bold text-slate-800 mb-4">More Details</h3>
+<div class="p-4 bg-gray-50 border border-gray-100 rounded-[2rem]">
+<textarea class="w-full bg-transparent border-none focus:ring-0 text-slate-700 placeholder-gray-400" placeholder="Describe the situation briefly..." rows="4"></textarea>
+<button class="w-full mt-4 py-4 bg-[#F3F4F6] rounded-2xl flex items-center justify-center gap-2 font-bold text-slate-700">
+<span class="text-xl">🎙️</span> Add Voice Note
+            </button>
+</div>
+</div>
+<!-- Detailed Location Section -->
+<div class="mb-6">
+<h3 class="text-lg font-bold text-slate-800 mb-4">Detailed Location</h3>
+<div class="relative mb-3">
+<span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+<svg class="h-5 w-5" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</span>
+<input class="w-full pl-12 pr-4 py-4 bg-white border border-gray-200 rounded-2xl focus:ring-2 focus:ring-rose-500 focus:border-rose-500" placeholder="Type area (e.g. Gangtok, MG Marg...)" type="text"/>
+</div>
+<button class="w-full p-4 bg-blue-50 text-blue-700 rounded-2xl flex items-center gap-3 border border-blue-100">
+<div class="bg-blue-600 text-white p-2 rounded-full">
+<svg class="h-4 w-4" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+<path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<div class="text-left">
+<p class="font-bold text-sm">Use My Current Location</p>
+<p class="text-xs opacity-80">Tap to allow GPS access</p>
+</div>
+</button>
+</div>
+</section>
+<!-- END: Step2_LocationMedia -->
+<!-- BEGIN: NavigationButtons -->
+<div class="mt-auto pt-6 flex gap-3">
+<button class="hidden flex-1 py-4 bg-gray-100 text-gray-700 rounded-2xl font-extrabold shadow-sm transition-all" id="prev-btn">Back</button>
+<button class="flex-[2] py-4 bg-[#D32F2F] text-white rounded-2xl font-extrabold shadow-lg shadow-rose-200 active:scale-95 transition-all" id="next-btn">Next</button>
+</div>
+<!-- END: NavigationButtons -->
+</div>
+</main>
+<!-- END: FormContent -->
+<!-- BEGIN: NavigationLogic -->
+<script data-purpose="form-navigation">
+    let currentStep = 1;
+    const totalSteps = 3;
+
+    const step1 = document.getElementById('step-1');
+    const step2 = document.getElementById('step-2');
+    const nextBtn = document.getElementById('next-btn');
+    const prevBtn = document.getElementById('prev-btn');
+    const stepCounter = document.getElementById('step-counter');
+    const step2Indicator = document.getElementById('step-2-indicator');
+    const step3Indicator = document.getElementById('step-3-indicator');
+
+    function updateUI() {
+      if (currentStep === 1) {
+        step1.classList.remove('hide-step');
+        step2.classList.add('hide-step');
+        prevBtn.classList.add('hidden');
+        nextBtn.innerText = 'Next';
+        step2Indicator.classList.replace('bg-[#D32F2F]', 'bg-gray-200');
+        stepCounter.innerText = 'Step 1 of 3';
+      } else if (currentStep === 2) {
+        step1.classList.add('hide-step');
+        step2.classList.remove('hide-step');
+        prevBtn.classList.remove('hidden');
+        nextBtn.innerText = 'Next: Review';
+        step2Indicator.classList.replace('bg-gray-200', 'bg-[#D32F2F]');
+        step3Indicator.classList.replace('bg-[#D32F2F]', 'bg-gray-200');
+        stepCounter.innerText = 'Step 2 of 3';
+      } else {
+        // Step 3 (Review/Submit)
+        nextBtn.innerText = 'Submit Report';
+        step3Indicator.classList.replace('bg-gray-200', 'bg-[#D32F2F]');
+        stepCounter.innerText = 'Step 3 of 3';
+      }
+    }
+
+    nextBtn.addEventListener('click', () => {
+      if (currentStep < totalSteps) {
+        currentStep++;
+        updateUI();
+      } else {
+        alert('Disaster report submitted successfully.');
+      }
+    });
+
+    prevBtn.addEventListener('click', () => {
+      if (currentStep > 1) {
+        currentStep--;
+        updateUI();
+      }
+    });
+
+    // Handle Selection Visuals
+    const cards = document.querySelectorAll('.incident-card');
+    cards.forEach(card => {
+      card.addEventListener('click', () => {
+        cards.forEach(c => {
+          c.classList.remove('selected', 'border-rose-600', 'bg-rose-50');
+          c.classList.add('border-gray-100', 'bg-white');
+        });
+        card.classList.add('selected', 'border-rose-600', 'bg-rose-50');
+        card.classList.remove('border-gray-100', 'bg-white');
+      });
+    });
+  </script>
+<!-- END: NavigationLogic -->
+</body></html>

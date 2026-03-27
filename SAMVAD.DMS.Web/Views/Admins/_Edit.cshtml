@@ -1,0 +1,43 @@
+@model SAMVAD.DMS.Application.DTOs.User.UpdateAdminDto
+@{
+    var roleOptions = ViewBag.RoleOptions as IReadOnlyCollection<string> ?? Array.Empty<string>();
+    var districtOptions = ViewBag.DistrictOptions as IReadOnlyCollection<SAMVAD.DMS.Application.DTOs.User.AdminDistrictOptionDto> ?? Array.Empty<SAMVAD.DMS.Application.DTOs.User.AdminDistrictOptionDto>();
+    var selectedDistrictIds = (ViewBag.SelectedDistrictIds as IReadOnlyCollection<Guid> ?? Array.Empty<Guid>()).ToHashSet();
+    var adminId = (ViewBag.AdminId as string) ?? string.Empty;
+}
+
+<form id="editAdminForm" class="space-y-3">
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="ModelOnly" class="text-xs text-rose-600"></div>
+    <input type="hidden" name="Id" value="@adminId" />
+    <input asp-for="Name" class="w-full rounded-xl border-slate-300" placeholder="Name" />
+    <span asp-validation-for="Name" class="text-xs text-rose-600"></span>
+
+    <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1">Role</label>
+        <select asp-for="RoleLabel" class="w-full rounded-xl border-slate-300">
+            <option value="">Select role</option>
+            @foreach (var role in roleOptions)
+            {
+                <option value="@role">@role</option>
+            }
+        </select>
+        <span asp-validation-for="RoleLabel" class="text-xs text-rose-600"></span>
+    </div>
+
+    <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1">Assigned Districts</label>
+        <select id="editAdminDistrictIds" asp-for="AssignedDistrictIds" class="w-full rounded-xl border-slate-300 min-h-[160px]" multiple>
+            @foreach (var district in districtOptions)
+            {
+                <option value="@district.Id" selected="@(selectedDistrictIds.Contains(district.Id) ? "selected" : null)">@district.Name</option>
+            }
+        </select>
+        <span asp-validation-for="AssignedDistrictIds" class="text-xs text-rose-600"></span>
+        <p class="mt-1 text-xs text-slate-500">Hold Ctrl (or Cmd on Mac) to select multiple districts.</p>
+    </div>
+
+    <div class="flex justify-end">
+        <button type="button" id="updateAdminBtn" class="rounded-lg bg-orange-600 text-white px-3 py-2 text-sm font-semibold">Update Admin</button>
+    </div>
+</form>

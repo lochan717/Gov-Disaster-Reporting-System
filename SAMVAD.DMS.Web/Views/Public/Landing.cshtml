@@ -1,0 +1,91 @@
+@model IReadOnlyCollection<SAMVAD.DMS.Application.DTOs.District.DistrictPublicOptionDto>
+@{
+    Layout = "_PublicLayout";
+    ViewData["Title"] = "SAMVAD DMS Portal";
+}
+
+<div class="min-h-screen bg-gradient-to-b from-orange-50 via-white to-slate-100">
+    <header class="border-b border-orange-100 bg-white/95 backdrop-blur sticky top-0 z-10">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <span class="h-10 w-10 rounded-lg bg-orange-600 text-white flex items-center justify-center font-extrabold">S</span>
+                <div>
+                    <p class="text-sm font-extrabold tracking-wide text-slate-900">SAMVAD DMS</p>
+                    <p class="text-[11px] font-semibold text-slate-500">Government Disaster Management System</p>
+                </div>
+            </div>
+            <a href="/Account/Login" class="inline-flex items-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">Admin Login</a>
+        </div>
+    </header>
+
+    <main>
+        <section class="max-w-6xl mx-auto px-4 py-10 md:py-14">
+            <div class="rounded-3xl bg-slate-900 text-white p-6 md:p-10 relative overflow-hidden">
+                <div class="absolute -top-14 -right-14 h-48 w-48 rounded-full bg-orange-400/25"></div>
+                <div class="absolute -bottom-16 -left-16 h-56 w-56 rounded-full bg-orange-300/15"></div>
+                <div class="relative max-w-3xl">
+                    <p class="text-xs font-bold tracking-[0.2em] uppercase text-orange-300">Citizen Portal</p>
+                    <h1 class="mt-2 text-3xl md:text-5xl font-extrabold leading-tight">One Unified Portal For Disaster Reporting</h1>
+                    <p class="mt-4 text-sm md:text-base text-slate-200">Report incidents quickly, attach evidence, and get a secure tracking link by SMS. This portal is for citizens; district/admin login is separate.</p>
+                    <div class="mt-6 flex flex-wrap gap-3">
+                        <a href="/report" class="inline-flex items-center rounded-2xl bg-orange-500 px-5 py-3 text-sm font-extrabold text-white shadow-lg shadow-orange-500/30 hover:bg-orange-400">Click Here To Report Disaster</a>
+                        <a href="#how-to-report" class="inline-flex items-center rounded-2xl border border-slate-500 px-5 py-3 text-sm font-semibold text-white hover:bg-slate-800">How It Works</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="max-w-6xl mx-auto px-4 pb-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <a href="/report" class="rounded-2xl border-2 border-dashed border-orange-300 bg-orange-50 p-5 hover:bg-orange-100 transition-colors">
+                    <p class="text-xs font-bold uppercase tracking-[0.18em] text-orange-700">Public Notice</p>
+                    <h2 class="mt-2 text-xl font-extrabold text-slate-900">Click Here To Report</h2>
+                    <p class="mt-2 text-sm text-slate-600">Emergency and standard incidents can be submitted in a 3-step guided form.</p>
+                </a>
+                <a href="/report" class="rounded-2xl border border-slate-200 bg-white p-5 hover:border-orange-300 transition-colors">
+                    <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Citizen Action</p>
+                    <h2 class="mt-2 text-xl font-extrabold text-slate-900">Report With Location + Media</h2>
+                    <p class="mt-2 text-sm text-slate-600">Upload photos/videos and capture GPS location to speed up response.</p>
+                </a>
+                <a href="/report" class="rounded-2xl border border-slate-200 bg-white p-5 hover:border-orange-300 transition-colors">
+                    <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Instant Tracking</p>
+                    <h2 class="mt-2 text-xl font-extrabold text-slate-900">Track Status By SMS Link</h2>
+                    <p class="mt-2 text-sm text-slate-600">Receive incident ID and secure status tracking link on your phone.</p>
+                </a>
+            </div>
+        </section>
+
+        <section id="how-to-report" class="max-w-6xl mx-auto px-4 pb-10 md:pb-14">
+            <div class="rounded-3xl border border-slate-200 bg-white p-6 md:p-8">
+                <h3 class="text-2xl font-extrabold text-slate-900">How To Report</h3>
+                <div class="mt-4 grid grid-cols-1 md:grid-cols-4 gap-3">
+                    <div class="rounded-xl bg-slate-50 border border-slate-200 p-4">
+                        <p class="text-xs font-bold text-orange-700">Step 1</p>
+                        <p class="mt-1 text-sm font-semibold text-slate-900">Choose disaster type and priority</p>
+                    </div>
+                    <div class="rounded-xl bg-slate-50 border border-slate-200 p-4">
+                        <p class="text-xs font-bold text-orange-700">Step 2</p>
+                        <p class="mt-1 text-sm font-semibold text-slate-900">Select district, add location and media</p>
+                    </div>
+                    <div class="rounded-xl bg-slate-50 border border-slate-200 p-4">
+                        <p class="text-xs font-bold text-orange-700">Step 3</p>
+                        <p class="mt-1 text-sm font-semibold text-slate-900">Review details and submit</p>
+                    </div>
+                    <div class="rounded-xl bg-slate-50 border border-slate-200 p-4">
+                        <p class="text-xs font-bold text-orange-700">After Submit</p>
+                        <p class="mt-1 text-sm font-semibold text-slate-900">Receive tracking link through SMS</p>
+                    </div>
+                </div>
+
+                <div class="mt-6 flex flex-wrap gap-3">
+                    <a href="/report" class="inline-flex items-center rounded-2xl bg-orange-600 px-5 py-3 text-sm font-extrabold text-white hover:bg-orange-500">Start Reporting</a>
+                    <a href="/Account/Login" class="inline-flex items-center rounded-2xl border border-slate-300 px-5 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50">Admin Login</a>
+                </div>
+
+                <p class="mt-6 text-xs text-slate-500">
+                    Active districts in system: <span class="font-semibold">@Model.Count</span>
+                </p>
+            </div>
+        </section>
+    </main>
+</div>

@@ -1,0 +1,47 @@
+@model SAMVAD.DMS.Application.DTOs.Incident.IncidentTrackingDto
+@{
+    Layout = "_PublicLayout";
+    ViewData["Title"] = "Track";
+
+    var isOpen = Model?.Status == SAMVAD.DMS.Domain.Enums.IncidentStatus.Open;
+    var isInProgress = Model?.Status == SAMVAD.DMS.Domain.Enums.IncidentStatus.InProgress;
+    var isClosed = Model?.Status == SAMVAD.DMS.Domain.Enums.IncidentStatus.Closed;
+
+    var openDone = isOpen || isInProgress || isClosed;
+    var inProgressDone = isInProgress || isClosed;
+    var closedDone = isClosed;
+}
+
+<div class="max-w-xl mx-auto p-6">
+    <div class="bg-white rounded-2xl border border-slate-200 p-6">
+        <h1 class="text-xl font-bold text-slate-900">Incident Status</h1>
+        @if (Model is null)
+        {
+            <p class="text-slate-600 mt-2">Incident not found.</p>
+        }
+        else
+        {
+            <p class="mt-2 text-slate-700">ID: @Model.IncidentId</p>
+            <p class="text-slate-700">Type: @Model.DisasterType</p>
+            <p class="text-slate-700">Status: @Model.Status</p>
+            <p class="text-slate-500 text-sm">Updated: @Model.LastUpdatedAt.ToString("yyyy-MM-dd HH:mm:ss") UTC</p>
+
+            <div class="mt-5">
+                <div class="grid grid-cols-3 gap-2 text-center text-xs font-semibold">
+                    <div class="rounded-lg px-2 py-2 @(openDone ? "bg-[#ec5b13] text-white" : "bg-slate-100 text-slate-500")">Open</div>
+                    <div class="rounded-lg px-2 py-2 @(inProgressDone ? "bg-[#ec5b13] text-white" : "bg-slate-100 text-slate-500")">In Progress</div>
+                    <div class="rounded-lg px-2 py-2 @(closedDone ? "bg-[#ec5b13] text-white" : "bg-slate-100 text-slate-500")">Closed</div>
+                </div>
+            </div>
+
+            <div class="mt-4 flex items-center justify-between">
+                <p class="text-slate-500 text-sm">This page auto-refreshes every 60 seconds.</p>
+                <button type="button" id="refreshBtn" class="rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-semibold text-slate-700 hover:bg-slate-50">Refresh now</button>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/public-track.js" asp-append-version="true"></script>
+}

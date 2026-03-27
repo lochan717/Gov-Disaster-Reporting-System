@@ -1,0 +1,53 @@
+@{
+    ViewData["Title"] = "All Incidents";
+    var initialIncidents = SAMVAD.DMS.Shared.Models.PaginatedResult<SAMVAD.DMS.Application.DTOs.Incident.IncidentListItemDto>.Create(Array.Empty<SAMVAD.DMS.Application.DTOs.Incident.IncidentListItemDto>(), 0, 1, 20);
+}
+
+<div class="space-y-4">
+    @Html.AntiForgeryToken()
+    <div class="flex items-center justify-between">
+        <h1 class="text-2xl font-bold text-slate-900">All Incidents</h1>
+        <div class="flex gap-2">
+            <button type="button" id="openOnBehalfIncidentBtn" class="rounded-lg border border-orange-300 bg-orange-50 px-3 py-2 text-sm font-semibold text-orange-700 hover:bg-orange-100">Submit On Behalf</button>
+            <a asp-action="ExportCsv" class="rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">Export CSV</a>
+            <button type="button" id="reloadIncidentsBtn" class="rounded-lg bg-orange-600 text-white px-3 py-2 text-sm font-semibold">Reload</button>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 xl:grid-cols-3 gap-4">
+        <div class="xl:col-span-2 bg-white border border-slate-200 rounded-2xl p-5">
+            <div class="space-y-3 mb-4 border-b border-slate-200 pb-4">
+                <div class="grid grid-cols-1 gap-3">
+                    <input type="search" id="incidentsSearchInput" class="rounded-lg border border-slate-300 px-3 py-2 text-sm" placeholder="Search by incident ID or location" />
+                </div>
+                <div class="flex flex-wrap items-center gap-2">
+                    <button type="button" id="incidentsApplyFiltersBtn" class="rounded-lg bg-slate-900 text-white px-3 py-2 text-sm font-semibold">Apply</button>
+                    <button type="button" id="incidentsResetFiltersBtn" class="rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-700">Reset</button>
+                </div>
+            </div>
+            <div id="incidentsListHost">
+                <partial name="_List" model="initialIncidents" />
+            </div>
+            <div class="mt-4 flex items-center justify-between gap-2 border-t border-slate-200 pt-4">
+                <button type="button" id="incidentsPrevPageBtn" class="rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-700 disabled:opacity-50" disabled>Previous</button>
+                <div class="flex items-center gap-2">
+                    <label for="incidentsPageSize" class="text-xs text-slate-500">Rows</label>
+                    <select id="incidentsPageSize" class="rounded-lg border border-slate-300 px-2 py-1.5 text-xs">
+                        <option value="10">10</option>
+                        <option value="20" selected>20</option>
+                        <option value="50">50</option>
+                    </select>
+                </div>
+                <p id="incidentsPaginationInfo" class="text-xs text-slate-500">Page 1 of 1</p>
+                <button type="button" id="incidentsNextPageBtn" class="rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-700 disabled:opacity-50" disabled>Next</button>
+            </div>
+        </div>
+        <div id="incidentDetailHost" class="bg-white border border-slate-200 rounded-2xl p-5">
+            <p class="text-slate-500">Select an incident to view details.</p>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/incidents.js" asp-append-version="true"></script>
+}

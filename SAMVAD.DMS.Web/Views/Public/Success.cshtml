@@ -1,0 +1,31 @@
+@{
+    Layout = "_PublicLayout";
+    ViewData["Title"] = "Submitted";
+    var incidentId = ViewData["IncidentId"]?.ToString();
+    var trackingToken = ViewData["TrackingToken"]?.ToString();
+    var trackingUrl = string.IsNullOrWhiteSpace(trackingToken)
+        ? string.Empty
+        : Url.Action("Track", "Public", new { trackingToken }, Context.Request.Scheme) ?? $"/track/{trackingToken}";
+}
+
+<div class="max-w-xl mx-auto p-6">
+    <div class="bg-white rounded-2xl border border-slate-200 p-6">
+        <h1 class="text-xl font-bold text-green-700">Report Submitted</h1>
+        <p class="mt-2 text-slate-700">Incident ID: <span class="font-semibold">@(string.IsNullOrWhiteSpace(incidentId) ? "Pending" : incidentId)</span></p>
+
+        @if (!string.IsNullOrWhiteSpace(trackingUrl))
+        {
+            <div class="mt-4">
+                <p class="text-slate-600 text-sm">Tracking Link</p>
+                <div class="mt-2 flex items-center gap-2">
+                    <input id="trackingLink" class="flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm" readonly value="@trackingUrl" />
+                    <button type="button" id="copyLink" class="rounded-lg bg-[#ec5b13] text-white px-3 py-2 text-sm font-semibold">Copy</button>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/public-success.js" asp-append-version="true"></script>
+}

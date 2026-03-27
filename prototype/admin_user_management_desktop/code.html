@@ -1,0 +1,296 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>DMS Admin - User Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#ec5b13",
+              "background-light": "#f8f6f6",
+              "background-dark": "#221610",
+            },
+            fontFamily: {
+              "display": ["Public Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100">
+<div class="relative flex h-screen w-full flex-col overflow-hidden">
+<header class="flex h-16 w-full items-center justify-between border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-6 shrink-0">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-3">
+<div class="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-white">
+<span class="material-symbols-outlined" style="">shield_person</span>
+</div>
+<h2 class="text-xl font-bold leading-tight tracking-tight text-slate-900 dark:text-white" style="">DMS Admin</h2>
+</div>
+<div class="hidden md:flex">
+<label class="relative flex h-10 w-64 items-center" style="">
+<span class="material-symbols-outlined absolute left-3 text-slate-400" style="">search</span>
+<input class="h-full w-full rounded-xl border-none bg-slate-100 dark:bg-slate-800 pl-10 pr-4 text-sm focus:ring-2 focus:ring-primary/50 text-slate-900 dark:text-white placeholder:text-slate-500" placeholder="Search administrators..." value="">
+</label>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700" style="">
+<span class="material-symbols-outlined" style="">notifications</span>
+</button>
+<button class="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700" style="">
+<span class="material-symbols-outlined" style="">settings</span>
+</button>
+<div class="h-10 w-10 rounded-full border-2 border-primary/20 bg-cover bg-center bg-no-repeat" data-alt="Profile picture of the current logged in administrator" style="background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuDCpq5-8Kcp5Z9-8Q3eRPa98OEx1zRINjTG4ZuyCGP3P4erYTEckkI1AgAIz0c6KuuGV6x6UB3qP8QvgY6puQu2XktI3FunMhHXKlrG7tmwbI_WCHc-xhKudNEowwhUTzonKEB2OVZu-zBMnTNOEh5Dzus9oqaHBfft5OZPnausL1e_OkEzc8YKxFNvBfudZ_Bl1KFfE19z19p5Pyw7cm8ZuTY9hky_EiUVlgkEELU2sOvDwKyUzYXCLP2fvwy43tu2ItNFG0uvkA4&quot;);"></div>
+</div>
+</header>
+<div class="flex flex-1 overflow-hidden">
+<aside class="w-64 border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex flex-col py-6 shrink-0">
+<nav class="flex-1 space-y-1 px-4">
+<a class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors" href="#" style="">
+<span class="material-symbols-outlined" style="">dashboard</span>
+<span class="text-sm font-medium" style="">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors" href="#" style="">
+<span class="material-symbols-outlined" style="">warning</span>
+<span class="text-sm font-medium" style="">Incidents</span>
+</a>
+<a class="flex items-center gap-3 rounded-xl bg-primary/10 px-4 py-3 text-primary transition-colors" href="#" style="">
+<span class="material-symbols-outlined" style="">group</span>
+<span class="text-sm font-bold" style="">User Management</span>
+</a>
+<a class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors" href="#" style="">
+<span class="material-symbols-outlined" style="">bar_chart</span>
+<span class="text-sm font-medium" style="">Reporting</span>
+</a>
+<a class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors" href="#" style="">
+<span class="material-symbols-outlined" style="">database</span>
+<span class="text-sm font-medium" style="">System Logs</span>
+</a>
+</nav>
+<div class="px-4 mt-auto">
+<div class="rounded-xl bg-slate-50 dark:bg-slate-800 p-4">
+<p class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2" style=""><br></p>
+<div class="h-2 w-full rounded-full bg-slate-200 dark:bg-slate-700">
+<div class="h-full w-3/4 rounded-full bg-primary"></div>
+</div>
+<p class="mt-2 text-xs text-slate-500" style=""><br></p>
+</div>
+</div>
+</aside>
+<main class="flex-1 overflow-y-auto bg-background-light dark:bg-background-dark p-8">
+<div class="mx-auto max-w-7xl">
+<div class="flex flex-wrap items-center justify-between gap-4 mb-8">
+<div>
+<h1 class="text-3xl font-bold tracking-tight text-slate-900 dark:text-white" style="">User Management</h1>
+<p class="mt-1 text-slate-500" style="">Manage administrator access levels and account security</p>
+</div>
+<button class="flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 font-bold text-white shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all" style="">
+<span class="material-symbols-outlined text-xl" style="">add</span>
+<span class="" style="">Add New User</span>
+</button>
+</div>
+<div class="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm overflow-hidden">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-slate-50 dark:bg-slate-800/50">
+<th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500" style="">Name</th>
+<th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500" style="">Role</th>
+<th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500" style="">Status</th>
+<th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500" style="">Last Active</th>
+<th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500" style="">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+<td class="px-6 py-4 whitespace-nowrap" style="">
+<div class="flex items-center gap-3">
+<div class="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold overflow-hidden">
+<img class="object-cover w-full h-full" data-alt="Avatar of John Smith" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBn3XOwmdBjnTQ_hcaou-vr35rC1A3dvBzIAlyBwQ1GQsHQkwbiz_A_7gFl5eZA6Rqmo1MiRGTHds0hUYJmy8gt06Akf4hUbqg9L7ctoRRN-k4qKZ-zoVq5BFRh-g5lmvMfQU1m2epu643BOFosPCH3r7-jdAn0n9vf3tOnPdh6aGNT756Vc2s6yh-YptTvTpL_71DvcdqfC24rpNA8WM_YRAhSIg7pNmMWelo_kGcDK9G8xYe5KuNP1EEEejG8Kvyx-d-d2uHx208" style="">
+</div>
+<div>
+<p class="text-sm font-semibold text-slate-900 dark:text-white" style="">John Smith</p>
+<p class="text-xs text-slate-500" style="">john.smith@dms-admin.com</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 whitespace-nowrap" style="">
+<span class="inline-flex items-center rounded-lg bg-slate-100 dark:bg-slate-800 px-3 py-1 text-xs font-medium text-slate-600 dark:text-slate-300" style="">
+                                                Super Admin
+                                            </span>
+</td>
+<td class="px-6 py-4 whitespace-nowrap" style="">
+<span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 dark:bg-emerald-900/30 px-3 py-1 text-xs font-semibold text-emerald-700 dark:text-emerald-400" style="">
+<span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+                                                Active
+                                            </span>
+</td>
+<td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500" style="">
+                                            2 mins ago
+                                        </td>
+<td class="px-6 py-4 whitespace-nowrap" style="">
+<div class="flex items-center gap-3">
+<button class="text-slate-400 hover:text-primary transition-colors" title="Reset Password" style="">
+<span class="material-symbols-outlined" style="">lock_reset</span>
+</button>
+<button class="text-slate-400 hover:text-primary transition-colors" title="Edit User" style="">
+<span class="material-symbols-outlined" style="">edit</span>
+</button>
+<button class="text-slate-400 hover:text-red-500 transition-colors" title="Delete User" style="">
+<span class="material-symbols-outlined" style="">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+<td class="px-6 py-4 whitespace-nowrap" style="">
+<div class="flex items-center gap-3">
+<div class="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold overflow-hidden">
+<img class="object-cover w-full h-full" data-alt="Avatar of Sarah Jenkins" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB7LvG5IqZ_nbAsubrxETS28kFBSlnA6ZdQmLUVy7zDVHwevtf4FUhs_c7dUakrsAEmmzu5WB1hWpyIeaZGXfELt3qlLzcZuqcE_DwbXoCBsOxfDivbmyz2lHpzVV7WmdYnBRgqkBvBr986erMfjPf6DjjUQC1AMv20ZmsPRco3x0q_DLuacdDBAot9DGlVX3SAetE6UCk9oU6tDxAef048-SaoWB2syMrCNe-1aXXK5bpmTUAs2lPj1Rsn3dNVAYm8BW2kLjWzL_I" style="">
+</div>
+<div>
+<p class="text-sm font-semibold text-slate-900 dark:text-white" style="">Sarah Jenkins</p>
+<p class="text-xs text-slate-500" style="">s.jenkins@dms-admin.com</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 whitespace-nowrap" style="">
+<span class="inline-flex items-center rounded-lg bg-slate-100 dark:bg-slate-800 px-3 py-1 text-xs font-medium text-slate-600 dark:text-slate-300" style="">
+                                                Incident Manager
+                                            </span>
+</td>
+<td class="px-6 py-4 whitespace-nowrap" style="">
+<span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 dark:bg-emerald-900/30 px-3 py-1 text-xs font-semibold text-emerald-700 dark:text-emerald-400" style="">
+<span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+                                                Active
+                                            </span>
+</td>
+<td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500" style="">
+                                            1 hour ago
+                                        </td>
+<td class="px-6 py-4 whitespace-nowrap" style="">
+<div class="flex items-center gap-3">
+<button class="text-slate-400 hover:text-primary transition-colors" title="Reset Password" style="">
+<span class="material-symbols-outlined" style="">lock_reset</span>
+</button>
+<button class="text-slate-400 hover:text-primary transition-colors" title="Edit User" style="">
+<span class="material-symbols-outlined" style="">edit</span>
+</button>
+<button class="text-slate-400 hover:text-red-500 transition-colors" title="Delete User" style="">
+<span class="material-symbols-outlined" style="">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+<td class="px-6 py-4 whitespace-nowrap" style="">
+<div class="flex items-center gap-3">
+<div class="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold overflow-hidden">
+<img class="object-cover w-full h-full" data-alt="Avatar of Michael Ross" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAfN3ZuR9EX0FSHSRpyY-zrB401-SJKV6KDXWxoX7O4J3nNhGKpVR0tLtFKVyXbFxk0OzhCR0dMSboeVVSvSk6alWeh5vVW8w6qbw7xY9aLICsd1qlJuTYhijvy5WL3v5P0LtF3nUhh5XEfFLfxbtsrwYxTJi1bY_lpFS68CTmBFK2Zd9kNR3cLTrI6h6aoOiQqRUgiNgDWxGVfZ3J_jifnsL64WUKr2VXJ6Ziy5L9urAjkzTKEPJ1coMCyfnKPggQWrdAmfzRxp2c" style="">
+</div>
+<div>
+<p class="text-sm font-semibold text-slate-900 dark:text-white" style="">Michael Ross</p>
+<p class="text-xs text-slate-500" style="">m.ross@dms-admin.com</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 whitespace-nowrap" style="">
+<span class="inline-flex items-center rounded-lg bg-slate-100 dark:bg-slate-800 px-3 py-1 text-xs font-medium text-slate-600 dark:text-slate-300" style="">
+                                                Data Analyst
+                                            </span>
+</td>
+<td class="px-6 py-4 whitespace-nowrap" style="">
+<span class="inline-flex items-center gap-1.5 rounded-full bg-slate-100 dark:bg-slate-800 px-3 py-1 text-xs font-semibold text-slate-500 dark:text-slate-400" style="">
+<span class="h-1.5 w-1.5 rounded-full bg-slate-400"></span>
+                                                Inactive
+                                            </span>
+</td>
+<td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500" style="">
+                                            3 days ago
+                                        </td>
+<td class="px-6 py-4 whitespace-nowrap" style="">
+<div class="flex items-center gap-3">
+<button class="text-slate-400 hover:text-primary transition-colors" title="Reset Password" style="">
+<span class="material-symbols-outlined" style="">lock_reset</span>
+</button>
+<button class="text-slate-400 hover:text-primary transition-colors" title="Edit User" style="">
+<span class="material-symbols-outlined" style="">edit</span>
+</button>
+<button class="text-slate-400 hover:text-red-500 transition-colors" title="Delete User" style="">
+<span class="material-symbols-outlined" style="">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+<td class="px-6 py-4 whitespace-nowrap" style="">
+<div class="flex items-center gap-3">
+<div class="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold overflow-hidden">
+<img class="object-cover w-full h-full" data-alt="Avatar of Emily Chen" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCSBE4-H5ylIARFtG2fIyx4eLQ4im_ErKuIL19XoMyOWLQ4PKzwpENfDUDRGkGP6VVqaNerzyN6ZWzJHApBUoIPM5eFcXLtWaepPGs5h9BWajglM-p2zE1Aj4zFfBn4oLWzTQlMNcQ-NWzQCOV54E21JdAkUV879qrNa7cSGF3f1kxLdQjxwRuEAuNGyiljs5Hreg-dnzdLLuVcSnN1AVR0sN2Tds9DcMQyMOeX8SZKQtarh2Pi5wOGtCepIgIJ_5SUicQ5S2fdqJU" style="">
+</div>
+<div>
+<p class="text-sm font-semibold text-slate-900 dark:text-white" style="">Emily Chen</p>
+<p class="text-xs text-slate-500" style="">e.chen@dms-admin.com</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 whitespace-nowrap" style="">
+<span class="inline-flex items-center rounded-lg bg-slate-100 dark:bg-slate-800 px-3 py-1 text-xs font-medium text-slate-600 dark:text-slate-300" style="">
+                                                Support Tier 2
+                                            </span>
+</td>
+<td class="px-6 py-4 whitespace-nowrap" style="">
+<span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 dark:bg-emerald-900/30 px-3 py-1 text-xs font-semibold text-emerald-700 dark:text-emerald-400" style="">
+<span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+                                                Active
+                                            </span>
+</td>
+<td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500" style="">
+                                            Just now
+                                        </td>
+<td class="px-6 py-4 whitespace-nowrap" style="">
+<div class="flex items-center gap-3">
+<button class="text-slate-400 hover:text-primary transition-colors" title="Reset Password" style="">
+<span class="material-symbols-outlined" style="">lock_reset</span>
+</button>
+<button class="text-slate-400 hover:text-primary transition-colors" title="Edit User" style="">
+<span class="material-symbols-outlined" style="">edit</span>
+</button>
+<button class="text-slate-400 hover:text-red-500 transition-colors" title="Delete User" style="">
+<span class="material-symbols-outlined" style="">delete</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="flex items-center justify-between border-t border-slate-100 dark:border-slate-800 px-6 py-4 bg-slate-50/50 dark:bg-slate-800/30">
+<p class="text-sm text-slate-500" style="">Showing <span class="font-medium text-slate-900 dark:text-white" style="">1</span> to <span class="font-medium text-slate-900 dark:text-white" style="">4</span> of <span class="font-medium text-slate-900 dark:text-white" style="">42</span> administrators</p>
+<div class="flex items-center gap-1">
+<button class="flex h-9 w-9 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700" style="">
+<span class="material-symbols-outlined" style="">chevron_left</span>
+</button>
+<button class="flex h-9 w-9 items-center justify-center rounded-lg bg-primary font-bold text-white shadow-sm" style="">1</button>
+<button class="flex h-9 w-9 items-center justify-center rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 font-medium" style="">2</button>
+<button class="flex h-9 w-9 items-center justify-center rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 font-medium" style="">3</button>
+<button class="flex h-9 w-9 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700" style="">
+<span class="material-symbols-outlined" style="">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</div>
+</body></html>
