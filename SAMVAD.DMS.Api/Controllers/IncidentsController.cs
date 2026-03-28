@@ -37,10 +37,17 @@ public class IncidentsController : ControllerBase
 
         var media = mediaFiles?
             .Where(x => x is not null && x.Length > 0)
-            .Select(x => new IncidentUploadFileDto
+            .Select(x =>
             {
-                FileName = x.FileName,
-                ContentType = x.ContentType
+                using var memoryStream = new MemoryStream();
+                x.CopyTo(memoryStream);
+
+                return new IncidentUploadFileDto
+                {
+                    FileName = x.FileName,
+                    ContentType = x.ContentType,
+                    Content = memoryStream.ToArray()
+                };
             })
             .ToArray();
 
@@ -173,6 +180,34 @@ public class IncidentsController : ControllerBase
         return result.IsSuccess
             ? Ok(ApiResponseDto<IncidentMediaDto>.Ok(result.Data))
             : BadRequest(ApiResponseDto<IncidentMediaDto>.Error(result.Message ?? "Failed."));
+    }
+
+    [Authorize(Policy = "AdminAccess")]
+    [HttpGet("{id:guid}/media/{mediaId:guid}")]
+    public async Task<IActionResult> DownloadMedia(Guid id, Guid mediaId)
+    {
+        var isSuperAdmin = User.IsInRole("SuperAdmin");
+        var assignedDistrictIds = GetAssignedDistrictIds();
+        var result = await _incidentService.GetIncidentMediaFileAsync(id, mediaId, isSuperAdmin, assignedDistrictIds);
+        if (!result.IsSuccess || result.Data is null || result.Data.Content.Length == 0)
+        {
+            return NotFound(ApiResponseDto<object>.Error(result.Message ?? "Media not found."));
+        }
+
+        return File(result.Data.Content, result.Data.ContentType, result.Data.FileName);
+    }
+
+    [AllowAnonymous]
+    [HttpGet("track/{trackingToken}/media/{mediaId:guid}")]
+    public async Task<IActionResult> DownloadTrackingMedia(string trackingToken, Guid mediaId)
+    {
+        var result = await _incidentService.GetTrackingMediaFileAsync(trackingToken, mediaId);
+        if (!result.IsSuccess || result.Data is null || result.Data.Content.Length == 0)
+        {
+            return NotFound(ApiResponseDto<object>.Error(result.Message ?? "Media not found."));
+        }
+
+        return File(result.Data.Content, result.Data.ContentType, result.Data.FileName);
     }
 
     [Authorize(Policy = "AdminAccess")]

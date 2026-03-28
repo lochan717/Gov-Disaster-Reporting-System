@@ -81,6 +81,61 @@ const incidentsModule = (function () {
         updatePaginationUi();
     }
 
+    function setDetailContent(html) {
+        $('#incidentDetailPaneContent').html(html);
+    }
+
+    function openMobileDetailPane() {
+        const $pane = $('#incidentDetailHost');
+        if (!$pane.length || window.innerWidth >= 768) {
+            return;
+        }
+
+        $pane.addClass('is-open');
+        $('body').addClass('overflow-hidden');
+    }
+
+    function closeMobileDetailPane() {
+        const $pane = $('#incidentDetailHost');
+        if (!$pane.length) {
+            return;
+        }
+
+        $pane.removeClass('is-open');
+        $('body').removeClass('overflow-hidden');
+    }
+
+    function openExportModal() {
+        const $modal = $('#exportCsvModal');
+        if (!$modal.length) {
+            return;
+        }
+
+        $('#exportSearchTerm').val(state.searchTerm);
+        $modal.removeClass('hidden').addClass('flex');
+        $('body').addClass('overflow-hidden');
+    }
+
+    function closeExportModal() {
+        const $modal = $('#exportCsvModal');
+        if (!$modal.length) {
+            return;
+        }
+
+        $modal.addClass('hidden').removeClass('flex');
+        $('body').removeClass('overflow-hidden');
+    }
+
+    function resetExportModalFilters() {
+        const form = document.getElementById('exportCsvForm');
+        if (!form) {
+            return;
+        }
+
+        form.reset();
+        $('#exportSearchTerm').val(state.searchTerm || '');
+    }
+
     function loadList(page) {
         if (typeof page === 'number' && page > 0) {
             state.page = page;
@@ -112,7 +167,8 @@ const incidentsModule = (function () {
             url: '/Incidents/Detail?id=' + encodeURIComponent(id),
             type: 'GET',
             success: function (html) {
-                $('#incidentDetailHost').html(html);
+                setDetailContent(html);
+                openMobileDetailPane();
             },
             error: function () {
                 notifyError('Unable to load incident details.');
@@ -125,10 +181,11 @@ const incidentsModule = (function () {
             url: url,
             type: 'GET',
             success: function (html) {
-                $('#incidentDetailHost').html(html);
+                setDetailContent(html);
+                openMobileDetailPane();
 
                 if ($.validator && $.validator.unobtrusive) {
-                    const $forms = $('#incidentDetailHost form');
+                    const $forms = $('#incidentDetailPaneContent form');
                     $forms.each(function () {
                         $(this).removeData('validator');
                         $(this).removeData('unobtrusiveValidation');
@@ -188,7 +245,8 @@ const incidentsModule = (function () {
                 if (response && response.success) {
                     notifySuccess(response.message || 'Incident submitted successfully.');
                     loadList(1);
-                    $('#incidentDetailHost').html('<p class="text-slate-500">Select an incident to view details.</p>');
+                    setDetailContent('<p class="text-slate-500">Select an incident to view details.</p>');
+                    closeMobileDetailPane();
                 } else {
                     notifyError((response && response.message) || 'Failed to submit incident.');
                 }
@@ -249,6 +307,32 @@ const incidentsModule = (function () {
     function bindEvents() {
         $(document).on('click', '#reloadIncidentsBtn', function () {
             loadList(state.page);
+        });
+
+        $(document).on('click', '#closeIncidentDetailPaneBtn', function () {
+            closeMobileDetailPane();
+        });
+
+        $(document).on('click', '#openExportCsvModalBtn', function () {
+            openExportModal();
+        });
+
+        $(document).on('click', '#closeExportCsvModalBtn', function () {
+            closeExportModal();
+        });
+
+        $(document).on('click', '#resetExportCsvFiltersBtn', function () {
+            resetExportModalFilters();
+        });
+
+        $(document).on('click', '#exportCsvModal', function (event) {
+            if (event.target && event.target.id === 'exportCsvModal') {
+                closeExportModal();
+            }
+        });
+
+        $(document).on('submit', '#exportCsvForm', function () {
+            closeExportModal();
         });
 
         $(document).on('click', '#openOnBehalfIncidentBtn', function () {
@@ -318,6 +402,14 @@ const incidentsModule = (function () {
         writeStateToUi();
         updatePaginationUi();
         loadList(state.page);
+
+        $(window).on('resize', function () {
+            if (window.innerWidth >= 768) {
+                $('body').removeClass('overflow-hidden');
+                $('#incidentDetailHost').removeClass('is-open');
+                closeExportModal();
+            }
+        });
     }
 
     return {

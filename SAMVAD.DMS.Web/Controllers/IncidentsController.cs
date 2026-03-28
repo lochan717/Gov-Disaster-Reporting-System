@@ -116,7 +116,30 @@ public class IncidentsController : Controller
     [HttpGet]
     public Task<IActionResult> ExportCsv()
     {
-        return ExportExcel();
+        return Task.FromResult<IActionResult>(RedirectToAction(nameof(Index))!);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ExportCsv(IncidentFilterDto filter)
+    {
+        filter ??= new IncidentFilterDto();
+        if (!TryValidateModel(filter))
+        {
+            TempData["Error"] = "Invalid export filters.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        var bytes = await _httpService.PostBytesAsync("api/incidents/export-csv", filter);
+        if (bytes is null || bytes.Length == 0)
+        {
+            TempData["Error"] = "Unable to export incidents.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        var districtSegment = filter.DistrictId.HasValue ? filter.DistrictId.Value.ToString("N") : "FILTERED";
+        var fileName = $"DMS_Export_{districtSegment}_{DateTime.UtcNow:yyyyMMdd_HHmmss}.csv";
+        return File(bytes, "text/csv", fileName);
     }
 
     [HttpGet]
@@ -131,5 +154,26 @@ public class IncidentsController : Controller
 
         var fileName = $"Incident_Report_{id:N}_{DateTime.UtcNow:yyyyMMdd}.pdf";
         return File(bytes, "application/pdf", fileName);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> DownloadMedia(Guid incidentId, Guid mediaId, string? fileName = null, string? contentType = null, bool download = false)
+    {
+        var bytes = await _httpService.GetBytesAsync($"api/incidents/{incidentId}/media/{mediaId}");
+        if (bytes is null || bytes.Length == 0)
+        {
+            TempData["Error"] = "Unable to load media file.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        var safeContentType = string.IsNullOrWhiteSpace(contentType) ? "application/octet-stream" : contentType;
+        var safeFileName = string.IsNullOrWhiteSpace(fileName) ? $"attachment_{mediaId:N}" : fileName;
+
+        if (download)
+        {
+            return File(bytes, safeContentType, safeFileName);
+        }
+
+        return File(bytes, safeContentType);
     }
 }

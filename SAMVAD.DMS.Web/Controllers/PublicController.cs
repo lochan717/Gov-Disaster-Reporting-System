@@ -110,4 +110,25 @@ public class PublicController : Controller
         var response = await _httpService.GetAsync<ApiResponseDto<IncidentTrackingDto>>($"api/incidents/track/{trackingToken}");
         return View(response?.Data);
     }
+
+    [HttpGet("track/{trackingToken}/media/{mediaId:guid}")]
+    public async Task<IActionResult> TrackMedia(string trackingToken, Guid mediaId, string? fileName = null, string? contentType = null, bool download = false)
+    {
+        var bytes = await _httpService.GetBytesAsync($"api/incidents/track/{trackingToken}/media/{mediaId}");
+        if (bytes is null || bytes.Length == 0)
+        {
+            TempData["Error"] = "Unable to load media file.";
+            return RedirectToAction(nameof(Track), new { trackingToken });
+        }
+
+        var safeContentType = string.IsNullOrWhiteSpace(contentType) ? "application/octet-stream" : contentType;
+        var safeFileName = string.IsNullOrWhiteSpace(fileName) ? $"attachment_{mediaId:N}" : fileName;
+
+        if (download)
+        {
+            return File(bytes, safeContentType, safeFileName);
+        }
+
+        return File(bytes, safeContentType);
+    }
 }

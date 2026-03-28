@@ -85,6 +85,24 @@ body {
   padding: 6px 10px;
 }
 
+/* Incident split pane behavior on small screens */
+@media (max-width: 767.98px) {
+  .incident-detail-pane {
+    display: none;
+  }
+
+  .incident-detail-pane.is-open {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 45;
+    margin: 0;
+    border-radius: 0;
+    overflow-y: auto;
+    max-height: 100dvh;
+  }
+}
+
 .select2-container--default .select2-results__option--highlighted.select2-results__option--selectable {
   background-color: #f97316;
   color: #ffffff;

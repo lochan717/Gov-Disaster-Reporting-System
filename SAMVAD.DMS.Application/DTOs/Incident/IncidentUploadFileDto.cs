@@ -9,4 +9,7 @@ public class IncidentUploadFileDto
 
     [Required]
     public string ContentType { get; set; } = string.Empty;
+
+    [Required]
+    public byte[] Content { get; set; } = Array.Empty<byte>();
 }

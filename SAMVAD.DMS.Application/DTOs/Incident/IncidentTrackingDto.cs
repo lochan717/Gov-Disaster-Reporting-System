@@ -9,4 +9,5 @@ public class IncidentTrackingDto
     public DisasterType DisasterType { get; set; }
     public IncidentStatus Status { get; set; }
     public DateTime LastUpdatedAt { get; set; }
+    public IReadOnlyCollection<IncidentMediaDto> MediaFiles { get; set; } = Array.Empty<IncidentMediaDto>();
 }

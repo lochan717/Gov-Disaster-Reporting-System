@@ -257,16 +257,26 @@ public class IncidentService : IIncidentService
                 var fileName = string.IsNullOrWhiteSpace(mediaFile.FileName)
                     ? "attachment"
                     : Path.GetFileName(mediaFile.FileName);
+                var safeFileName = string.IsNullOrWhiteSpace(fileName) ? "attachment" : fileName;
+                var contentType = string.IsNullOrWhiteSpace(mediaFile.ContentType)
+                    ? InferContentType(safeFileName)
+                    : mediaFile.ContentType;
                 var mediaType = mediaFile.ContentType.Contains("video", StringComparison.OrdinalIgnoreCase)
                     ? IncidentMediaType.Video
                     : IncidentMediaType.Photo;
+                var relativePath = $"uploads/incidents/{Guid.NewGuid():N}_{safeFileName}";
+
+                if (mediaFile.Content is { Length: > 0 })
+                {
+                    SaveMediaFile(relativePath, mediaFile.Content);
+                }
 
                 await _unitOfWork.AddAsync(new IncidentMedia
                 {
                     Id = Guid.NewGuid(),
                     IncidentId = incident.Id,
-                    FileName = fileName,
-                    FilePath = $"uploads/incidents/{Guid.NewGuid():N}_{fileName}",
+                    FileName = safeFileName,
+                    FilePath = relativePath,
                     MediaType = mediaType,
                     UploadedBy = mediaUploadedBy,
                     UploadedAt = utcNow
@@ -303,18 +313,20 @@ public class IncidentService : IIncidentService
 
     public Task<Result<byte[]>> ExportExcelAsync(IncidentFilterDto filter, string userId, bool isSuperAdmin, IReadOnlyCollection<Guid> assignedDistrictIds, CancellationToken cancellationToken = default)
     {
-        var incidents = ApplyIncidentSorting(BuildFilteredIncidentQuery(filter, isSuperAdmin, assignedDistrictIds), filter)
+        var filteredIncidentQuery = BuildFilteredIncidentQuery(filter, isSuperAdmin, assignedDistrictIds);
+        var incidents = ApplyIncidentSorting(filteredIncidentQuery, filter)
             .ToList();
 
-        var incidentIds = incidents.Select(x => x.Id).ToArray();
         var districtLookup = _unitOfWork.Query<District>().ToDictionary(x => x.Id, x => x.Name);
+        var filteredIncidentIdsQuery = filteredIncidentQuery.Select(x => x.Id);
+
         var mediaCountLookup = _unitOfWork.Query<IncidentMedia>()
-            .Where(x => incidentIds.Contains(x.IncidentId))
+            .Where(x => filteredIncidentIdsQuery.Contains(x.IncidentId))
             .GroupBy(x => x.IncidentId)
             .ToDictionary(x => x.Key, x => x.Count());
 
         var commentCountLookup = _unitOfWork.Query<IncidentComment>()
-            .Where(x => incidentIds.Contains(x.IncidentId))
+            .Where(x => filteredIncidentIdsQuery.Contains(x.IncidentId))
             .GroupBy(x => x.IncidentId)
             .ToDictionary(x => x.Key, x => x.Count());
 
@@ -454,6 +466,7 @@ public class IncidentService : IIncidentService
                 Id = x.Id,
                 FileName = x.FileName,
                 FilePath = x.FilePath,
+                ContentType = InferContentType(x.FileName),
                 MediaType = x.MediaType,
                 UploadedBy = x.UploadedBy,
                 UploadedAt = x.UploadedAt
@@ -588,13 +601,29 @@ public class IncidentService : IIncidentService
             return Task.FromResult(Result<IncidentTrackingDto>.Fail("Incident not found."));
         }
 
+        var media = _unitOfWork.Query<IncidentMedia>()
+            .Where(x => x.IncidentId == incident.Id)
+            .OrderByDescending(x => x.UploadedAt)
+            .Select(x => new IncidentMediaDto
+            {
+                Id = x.Id,
+                FileName = x.FileName,
+                FilePath = x.FilePath,
+                ContentType = InferContentType(x.FileName),
+                MediaType = x.MediaType,
+                UploadedBy = x.UploadedBy,
+                UploadedAt = x.UploadedAt
+            })
+            .ToArray();
+
         return Task.FromResult(Result<IncidentTrackingDto>.Succeed(new IncidentTrackingDto
         {
             IncidentId = incident.IncidentId,
             TrackingToken = incident.TrackingToken,
             DisasterType = incident.DisasterType,
             Status = incident.Status,
-            LastUpdatedAt = incident.UpdatedAt
+            LastUpdatedAt = incident.UpdatedAt,
+            MediaFiles = media
         }));
     }
 
@@ -620,13 +649,23 @@ public class IncidentService : IIncidentService
         var mediaType = contentType.Contains("video", StringComparison.OrdinalIgnoreCase)
             ? IncidentMediaType.Video
             : IncidentMediaType.Photo;
+        var safeFileName = Path.GetFileName(string.IsNullOrWhiteSpace(fileName) ? "attachment" : fileName);
+        var safeContentType = string.IsNullOrWhiteSpace(contentType) ? InferContentType(safeFileName) : contentType;
+        var relativePath = $"uploads/incidents/{Guid.NewGuid():N}_{safeFileName}";
+
+        await using var memoryStream = new MemoryStream();
+        await fileStream.CopyToAsync(memoryStream, cancellationToken);
+        if (memoryStream.Length > 0)
+        {
+            SaveMediaFile(relativePath, memoryStream.ToArray());
+        }
 
         var media = new IncidentMedia
         {
             Id = Guid.NewGuid(),
             IncidentId = incidentId,
-            FileName = fileName,
-            FilePath = $"uploads/incidents/{Guid.NewGuid():N}_{fileName}",
+            FileName = safeFileName,
+            FilePath = relativePath,
             MediaType = mediaType,
             UploadedBy = MediaUploadedBy.Admin,
             UploadedAt = DateTime.UtcNow
@@ -640,10 +679,70 @@ public class IncidentService : IIncidentService
             Id = media.Id,
             FileName = media.FileName,
             FilePath = media.FilePath,
+            ContentType = safeContentType,
             MediaType = media.MediaType,
             UploadedBy = media.UploadedBy,
             UploadedAt = media.UploadedAt
         });
+    }
+
+    public Task<Result<IncidentMediaFileDto>> GetIncidentMediaFileAsync(Guid incidentId, Guid mediaId, bool isSuperAdmin, IReadOnlyCollection<Guid> assignedDistrictIds, CancellationToken cancellationToken = default)
+    {
+        var incident = _unitOfWork.Query<Incident>().FirstOrDefault(x => x.Id == incidentId);
+        if (incident is null)
+        {
+            return Task.FromResult(Result<IncidentMediaFileDto>.Fail("Incident not found."));
+        }
+
+        if (!CanAccessIncident(incident.DistrictId, isSuperAdmin, assignedDistrictIds))
+        {
+            return Task.FromResult(Result<IncidentMediaFileDto>.Fail("Access denied."));
+        }
+
+        var media = _unitOfWork.Query<IncidentMedia>().FirstOrDefault(x => x.Id == mediaId && x.IncidentId == incidentId);
+        if (media is null)
+        {
+            return Task.FromResult(Result<IncidentMediaFileDto>.Fail("Media not found."));
+        }
+
+        if (!TryReadMediaFile(media.FilePath, out var bytes))
+        {
+            return Task.FromResult(Result<IncidentMediaFileDto>.Fail("Media file not found on server."));
+        }
+
+        return Task.FromResult(Result<IncidentMediaFileDto>.Succeed(new IncidentMediaFileDto
+        {
+            FileName = media.FileName,
+            ContentType = InferContentType(media.FileName),
+            Content = bytes
+        }));
+    }
+
+    public Task<Result<IncidentMediaFileDto>> GetTrackingMediaFileAsync(string trackingToken, Guid mediaId, CancellationToken cancellationToken = default)
+    {
+        var incident = _unitOfWork.Query<Incident>().FirstOrDefault(x => x.TrackingToken == trackingToken);
+        if (incident is null)
+        {
+            return Task.FromResult(Result<IncidentMediaFileDto>.Fail("Incident not found."));
+        }
+
+        var media = _unitOfWork.Query<IncidentMedia>().FirstOrDefault(x => x.Id == mediaId && x.IncidentId == incident.Id);
+        if (media is null)
+        {
+            return Task.FromResult(Result<IncidentMediaFileDto>.Fail("Media not found."));
+        }
+
+        if (!TryReadMediaFile(media.FilePath, out var bytes))
+        {
+            return Task.FromResult(Result<IncidentMediaFileDto>.Fail("Media file not found on server."));
+        }
+
+        return Task.FromResult(Result<IncidentMediaFileDto>.Succeed(new IncidentMediaFileDto
+        {
+            FileName = media.FileName,
+            ContentType = InferContentType(media.FileName),
+            Content = bytes
+        }));
     }
 
     public async Task<Result<bool>> UpdateStatusAsync(Guid incidentId, UpdateStatusDto request, string userId, string userName, bool isSuperAdmin, IReadOnlyCollection<Guid> assignedDistrictIds, CancellationToken cancellationToken = default)
@@ -884,7 +983,16 @@ public class IncidentService : IIncidentService
 
                 foreach (var media in incident.MediaFiles)
                 {
-                    table.Cell().Element(BodyCell).AlignCenter().Text(media.MediaType == IncidentMediaType.Video ? "[Video]" : "[Photo]");
+                    table.Cell().Element(BodyCell).AlignCenter().Element(container =>
+                    {
+                        if (media.MediaType == IncidentMediaType.Photo && TryReadMediaFile(media.FilePath, out var imageBytes) && imageBytes.Length > 0)
+                        {
+                            container.Height(64).Image(imageBytes).FitArea();
+                            return;
+                        }
+
+                        container.Text(media.MediaType == IncidentMediaType.Video ? "[Video]" : "[Photo]");
+                    });
                     table.Cell().Element(BodyCell).Text(media.FileName);
                     table.Cell().Element(BodyCell).Text(media.MediaType.ToString());
                     table.Cell().Element(BodyCell).Text(media.UploadedAt.ToString("yyyy-MM-dd HH:mm:ss"));
@@ -908,6 +1016,70 @@ public class IncidentService : IIncidentService
     {
         var escaped = value.Replace("\"", "\"\"");
         return $"\"{escaped}\"";
+    }
+
+    private static string GetPhysicalMediaPath(string relativePath)
+    {
+        var normalizedRelativePath = (relativePath ?? string.Empty)
+            .Replace('/', Path.DirectorySeparatorChar)
+            .TrimStart(Path.DirectorySeparatorChar);
+
+        if (normalizedRelativePath.StartsWith("uploads" + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase))
+        {
+            normalizedRelativePath = normalizedRelativePath.Substring("uploads".Length + 1);
+        }
+
+        return Path.Combine(AppContext.BaseDirectory, "uploads", normalizedRelativePath);
+    }
+
+    private static void SaveMediaFile(string relativePath, byte[] content)
+    {
+        if (content.Length == 0)
+        {
+            return;
+        }
+
+        var physicalPath = GetPhysicalMediaPath(relativePath);
+        var directory = Path.GetDirectoryName(physicalPath);
+        if (!string.IsNullOrWhiteSpace(directory))
+        {
+            Directory.CreateDirectory(directory);
+        }
+
+        File.WriteAllBytes(physicalPath, content);
+    }
+
+    private static bool TryReadMediaFile(string relativePath, out byte[] content)
+    {
+        var physicalPath = GetPhysicalMediaPath(relativePath);
+        if (!File.Exists(physicalPath))
+        {
+            content = Array.Empty<byte>();
+            return false;
+        }
+
+        content = File.ReadAllBytes(physicalPath);
+        return content.Length > 0;
+    }
+
+    private static string InferContentType(string fileName)
+    {
+        var extension = Path.GetExtension(fileName).ToLowerInvariant();
+        return extension switch
+        {
+            ".jpg" => "image/jpeg",
+            ".jpeg" => "image/jpeg",
+            ".png" => "image/png",
+            ".gif" => "image/gif",
+            ".webp" => "image/webp",
+            ".bmp" => "image/bmp",
+            ".mp4" => "video/mp4",
+            ".mov" => "video/quicktime",
+            ".avi" => "video/x-msvideo",
+            ".mkv" => "video/x-matroska",
+            ".webm" => "video/webm",
+            _ => "application/octet-stream"
+        };
     }
 
     private static void ComposeComments(IContainer container, IncidentDetailDto incident)

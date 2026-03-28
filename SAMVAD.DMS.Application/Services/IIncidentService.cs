@@ -65,6 +65,18 @@ public interface IIncidentService
         IReadOnlyCollection<Guid> assignedDistrictIds,
         CancellationToken cancellationToken = default);
 
+    Task<Result<IncidentMediaFileDto>> GetIncidentMediaFileAsync(
+        Guid incidentId,
+        Guid mediaId,
+        bool isSuperAdmin,
+        IReadOnlyCollection<Guid> assignedDistrictIds,
+        CancellationToken cancellationToken = default);
+
+    Task<Result<IncidentMediaFileDto>> GetTrackingMediaFileAsync(
+        string trackingToken,
+        Guid mediaId,
+        CancellationToken cancellationToken = default);
+
     Task<Result<byte[]>> ExportPdfAsync(
         Guid incidentId,
         string userId,

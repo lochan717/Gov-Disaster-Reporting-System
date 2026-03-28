@@ -9,7 +9,7 @@
         <h1 class="text-2xl font-bold text-slate-900">All Incidents</h1>
         <div class="flex gap-2">
             <button type="button" id="openOnBehalfIncidentBtn" class="rounded-lg border border-orange-300 bg-orange-50 px-3 py-2 text-sm font-semibold text-orange-700 hover:bg-orange-100">Submit On Behalf</button>
-            <a asp-action="ExportCsv" class="rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">Export CSV</a>
+            <button type="button" id="openExportCsvModalBtn" class="rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">Export CSV</button>
             <button type="button" id="reloadIncidentsBtn" class="rounded-lg bg-orange-600 text-white px-3 py-2 text-sm font-semibold">Reload</button>
         </div>
     </div>
@@ -42,8 +42,75 @@
                 <button type="button" id="incidentsNextPageBtn" class="rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-700 disabled:opacity-50" disabled>Next</button>
             </div>
         </div>
-        <div id="incidentDetailHost" class="bg-white border border-slate-200 rounded-2xl p-5">
-            <p class="text-slate-500">Select an incident to view details.</p>
+        <div id="incidentDetailHost" class="incident-detail-pane bg-white border border-slate-200 rounded-2xl p-5">
+            <div class="mb-3 flex items-center justify-between md:hidden">
+                <h2 class="text-sm font-semibold text-slate-700">Incident Detail</h2>
+                <button type="button" id="closeIncidentDetailPaneBtn" class="rounded-lg border border-slate-300 px-2 py-1 text-xs font-semibold text-slate-700">Close</button>
+            </div>
+            <div id="incidentDetailPaneContent">
+                <p class="text-slate-500">Select an incident to view details.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="exportCsvModal" class="fixed inset-0 z-40 hidden items-center justify-center bg-slate-900/50 p-4">
+        <div class="w-full max-w-xl rounded-2xl border border-slate-200 bg-white p-5 shadow-xl">
+            <div class="mb-4 flex items-center justify-between">
+                <h2 class="text-lg font-bold text-slate-900">Export CSV</h2>
+                <button type="button" id="closeExportCsvModalBtn" class="rounded-lg border border-slate-300 px-2 py-1 text-xs font-semibold text-slate-700">Close</button>
+            </div>
+
+            <form asp-action="ExportCsv" method="post" class="space-y-4" id="exportCsvForm">
+                @Html.AntiForgeryToken()
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Search</label>
+                        <input name="SearchTerm" id="exportSearchTerm" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" placeholder="Incident ID or location" />
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Status</label>
+                        <select name="Status" id="exportStatus" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm">
+                            <option value="">All</option>
+                            <option value="1">Open</option>
+                            <option value="2">In Progress</option>
+                            <option value="3">Closed</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Disaster Type</label>
+                        <select name="DisasterType" id="exportDisasterType" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm">
+                            <option value="">All</option>
+                            <option value="1">Landslide</option>
+                            <option value="2">Flood</option>
+                            <option value="3">Fire</option>
+                            <option value="4">Earthquake</option>
+                            <option value="5">Road Blockage</option>
+                            <option value="6">Others</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Priority</label>
+                        <select name="Priority" id="exportPriority" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm">
+                            <option value="">All</option>
+                            <option value="1">Standard</option>
+                            <option value="2">Emergency</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">From Date</label>
+                        <input name="FromDate" id="exportFromDate" type="date" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" />
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">To Date</label>
+                        <input name="ToDate" id="exportToDate" type="date" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" />
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-200">
+                    <button type="button" id="resetExportCsvFiltersBtn" class="rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-700">Reset</button>
+                    <button type="submit" class="rounded-lg bg-orange-600 px-3 py-2 text-sm font-semibold text-white">Export</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
