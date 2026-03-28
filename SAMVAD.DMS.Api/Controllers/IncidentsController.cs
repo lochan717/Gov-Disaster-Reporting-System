@@ -24,7 +24,15 @@ public class IncidentsController : ControllerBase
     {
         if (!ModelState.IsValid)
         {
-            return BadRequest(ApiResponseDto<IncidentTrackingDto>.Error("Invalid request data."));
+            var validationMessage = string.Join(" ",
+                ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage)
+                    .Where(x => !string.IsNullOrWhiteSpace(x))
+                    .Distinct());
+
+            return BadRequest(ApiResponseDto<IncidentTrackingDto>.Error(
+                string.IsNullOrWhiteSpace(validationMessage) ? "Invalid request data." : validationMessage));
         }
 
         var media = mediaFiles?

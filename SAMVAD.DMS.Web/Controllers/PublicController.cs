@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using SAMVAD.DMS.Application.DTOs.Incident;
+using SAMVAD.DMS.Domain.Enums;
 using SAMVAD.DMS.Shared.Models;
 using SAMVAD.DMS.Web.Services;
 
@@ -40,7 +41,8 @@ public class PublicController : Controller
 
         return View(new IncidentPublicSubmitDto
         {
-            DistrictId = selectedDistrictId
+            DistrictId = selectedDistrictId,
+            Priority = IncidentPriority.Emergency
         });
     }
 

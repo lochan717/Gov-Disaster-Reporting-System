@@ -58,7 +58,7 @@
                     <p class="text-sm font-semibold text-slate-700 mb-2">Priority</p>
                     <div class="grid grid-cols-2 gap-3" id="priorityGrid">
                         <button type="button" class="report-priority-btn rounded-xl border border-slate-200 px-3 py-3 text-sm font-semibold" data-value="1">Standard</button>
-                        <button type="button" class="report-priority-btn rounded-xl border border-rose-200 bg-rose-50 text-rose-700 px-3 py-3 text-sm font-semibold" data-value="2">Emergency</button>
+                        <button type="button" class="report-priority-btn rounded-xl border border-slate-200 px-3 py-3 text-sm font-semibold" data-value="2">Emergency</button>
                     </div>
                     <span asp-validation-for="Priority" class="text-xs text-rose-600"></span>
                 </div>
@@ -108,6 +108,7 @@
                     <input id="reportMediaFiles" name="mediaFiles" type="file" multiple accept="image/*,video/*" class="w-full rounded-xl border-slate-300" />
                     <p class="text-xs text-slate-500 mt-1">Up to 5 files.</p>
                     <p id="mediaCountHint" class="text-xs text-slate-500 mt-1"></p>
+                    <p id="reportMediaFilesValidation" class="text-xs text-rose-600"></p>
                 </div>
 
                 <div>

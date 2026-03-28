@@ -979,6 +979,19 @@ dotnet ef migrations add MigrationName --project EnterpriseApp.Infrastructure --
 # Update database
 dotnet ef database update --project EnterpriseApp.Infrastructure --startup-project EnterpriseApp.Api
 ```
+### Mistakes to avoid in Entity Framework
+- Loading Entire Entities - Use Select() Projections
+- Tracking Everything - Use AsNoTracking() for reads
+- N+1 Queries in Loops - Include() or split queries
+- ToList() Too Early - Keep IQueryable as long as possible
+- Missing Indexes - .HasIndex() in OnModelCreating
+- One Giant DbContext - Split by Bounded Context
+- Ignoring Compiled Queries - EF.Compile AsyncQuery()
+- Not Reading the SQL - .ToQuerySting()
+- Overusing Include() (Cartesian Explosion)
+- No Pagination
+- Ignoring Query Reuse
+
 
 ## API Communication
 

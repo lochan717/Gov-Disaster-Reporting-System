@@ -18,6 +18,27 @@ const publicReportModule = (function () {
         2: 'Emergency'
     };
 
+    function setFieldError(fieldName, message) {
+        const $message = $('[data-valmsg-for="' + fieldName + '"]');
+        if ($message.length) {
+            $message.text(message || '');
+        }
+    }
+
+    function clearFieldError(fieldName) {
+        setFieldError(fieldName, '');
+    }
+
+    function setMediaError(message) {
+        $('#reportMediaFilesValidation').text(message || '');
+    }
+
+    function hasGpsCoordinates() {
+        const lat = ($('#LocationGpsLat').val() || '').toString().trim();
+        const lng = ($('#LocationGpsLng').val() || '').toString().trim();
+        return !!lat && !!lng;
+    }
+
     function getStepSections() {
         return $('[data-step]');
     }
@@ -43,31 +64,70 @@ const publicReportModule = (function () {
         if (step === 1) {
             const disasterType = parseInt($('#reportDisasterType').val(), 10) || 0;
             const priority = parseInt($('#reportPriority').val(), 10) || 0;
-            if (disasterType < 1 || priority < 1) {
-                if (window.toastr) {
-                    window.toastr.warning('Please select disaster type and priority.');
-                }
-                return false;
+            let isValid = true;
+
+            if (disasterType < 1) {
+                setFieldError('DisasterType', 'Disaster type is required.');
+                isValid = false;
+            } else {
+                clearFieldError('DisasterType');
             }
-            return true;
+
+            if (priority < 1) {
+                setFieldError('Priority', 'Priority is required.');
+                isValid = false;
+            } else {
+                clearFieldError('Priority');
+            }
+
+            return isValid;
         }
 
         if (step === 2) {
             const districtId = ($('#DistrictId').val() || '').toString().trim();
+            const locationText = ($('#LocationText').val() || '').toString().trim();
+            let isValid = true;
+
             if (!districtId) {
-                if (window.toastr) {
-                    window.toastr.warning('Please select district.');
-                }
-                return false;
+                setFieldError('DistrictId', 'District is required.');
+                isValid = false;
+            } else {
+                clearFieldError('DistrictId');
+            }
+
+            if (!locationText && !hasGpsCoordinates()) {
+                setFieldError('LocationText', 'Location text is required when GPS is not captured.');
+                isValid = false;
+            } else {
+                clearFieldError('LocationText');
             }
 
             const fileCount = ($('#reportMediaFiles')[0]?.files || []).length;
             if (fileCount > 5) {
-                if (window.toastr) {
-                    window.toastr.warning('Maximum 5 files are allowed.');
-                }
+                setMediaError('Maximum 5 files are allowed.');
+                isValid = false;
+            } else {
+                setMediaError('');
+            }
+
+            return isValid;
+        }
+
+        if (step === 3) {
+            const mobile = ($('#MobileNumber').val() || '').toString().trim();
+            const mobileRegex = /^[0-9]{10}$/;
+
+            if (!mobile) {
+                setFieldError('MobileNumber', 'Mobile number is required.');
                 return false;
             }
+
+            if (!mobileRegex.test(mobile)) {
+                setFieldError('MobileNumber', 'Enter a valid 10-digit mobile number.');
+                return false;
+            }
+
+            clearFieldError('MobileNumber');
             return true;
         }
 
@@ -84,6 +144,7 @@ const publicReportModule = (function () {
             const value = $(this).data('value');
             $('#reportDisasterType').val(value);
             refreshSelectionStyles('.report-disaster-btn', 'border-[#ec5b13] bg-orange-50 ring-1 ring-[#ec5b13]', value);
+            clearFieldError('DisasterType');
         });
 
         $(document).on('click', '.report-priority-btn', function () {
@@ -95,6 +156,27 @@ const publicReportModule = (function () {
                 $(this).addClass('border-rose-300 bg-rose-50 text-rose-700');
             } else {
                 $(this).addClass('border-[#ec5b13] bg-orange-50 text-[#ec5b13]');
+            }
+
+            clearFieldError('Priority');
+        });
+
+        $(document).on('change', '#DistrictId', function () {
+            if (($('#DistrictId').val() || '').toString().trim()) {
+                clearFieldError('DistrictId');
+            }
+        });
+
+        $(document).on('input', '#LocationText,#MobileNumber', function () {
+            const fieldName = $(this).attr('name');
+            if (fieldName) {
+                clearFieldError(fieldName);
+            }
+        });
+
+        $(document).on('input', '#LocationGpsLat,#LocationGpsLng', function () {
+            if (hasGpsCoordinates()) {
+                clearFieldError('LocationText');
             }
         });
     }
@@ -171,16 +253,17 @@ const publicReportModule = (function () {
             if (files.length > 5) {
                 this.value = '';
                 $('#mediaCountHint').text('');
-                if (window.toastr) {
-                    window.toastr.warning('You can upload maximum 5 files.');
-                }
+                setMediaError('Maximum 5 files are allowed.');
+                return;
             }
+
+            setMediaError('');
         });
     }
 
     function bindSubmitGuard() {
         $(document).on('submit', '#publicReportForm', function () {
-            if (!isStepValid(3)) {
+            if (!isStepValid(1) || !isStepValid(2) || !isStepValid(3)) {
                 return false;
             }
 
@@ -198,7 +281,12 @@ const publicReportModule = (function () {
             refreshSelectionStyles('.report-disaster-btn', 'border-[#ec5b13] bg-orange-50 ring-1 ring-[#ec5b13]', disasterType);
         }
 
-        const priority = parseInt($('#reportPriority').val(), 10) || 0;
+        let priority = parseInt($('#reportPriority').val(), 10) || 0;
+        if (priority < 1) {
+            priority = 2;
+            $('#reportPriority').val(priority);
+        }
+
         if (priority > 0) {
             $('.report-priority-btn').removeClass('border-[#ec5b13] bg-orange-50 text-[#ec5b13] border-rose-300 bg-rose-50 text-rose-700');
             const $selected = $('.report-priority-btn[data-value="' + priority + '"]');

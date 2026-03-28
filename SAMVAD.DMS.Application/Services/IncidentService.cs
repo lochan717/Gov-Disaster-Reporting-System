@@ -1,5 +1,3 @@
-using System.Text.Json;
-using System.Text;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
@@ -8,6 +6,8 @@ using SAMVAD.DMS.Domain.Entities;
 using SAMVAD.DMS.Domain.Enums;
 using SAMVAD.DMS.Domain.Interfaces;
 using SAMVAD.DMS.Shared.Models;
+using System.Text;
+using System.Text.Json;
 
 namespace SAMVAD.DMS.Application.Services;
 
@@ -285,11 +285,11 @@ public class IncidentService : IIncidentService
             SerializeIncidentAuditSnapshot(incident),
             cancellationToken);
 
-        await _notificationService.NotifyIncidentSubmittedAsync(incident.Id, cancellationToken);
-        if (incident.Priority == IncidentPriority.Emergency)
-        {
-            await _notificationService.NotifyEmergencyIncidentAsync(incident.Id, cancellationToken);
-        }
+        //await _notificationService.NotifyIncidentSubmittedAsync(incident.Id, cancellationToken);
+        //if (incident.Priority == IncidentPriority.Emergency)
+        //{
+        //    await _notificationService.NotifyEmergencyIncidentAsync(incident.Id, cancellationToken);
+        //}
 
         return Result<IncidentTrackingDto>.Succeed(new IncidentTrackingDto
         {
