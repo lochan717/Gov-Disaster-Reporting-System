@@ -223,24 +223,13 @@ const incidentsModule = (function () {
             return;
         }
 
-        const payload = {
-            DistrictId: $('#submitIncidentOnBehalfForm select[name="DistrictId"]').val(),
-            SubmissionChannel: $('#submitIncidentOnBehalfForm select[name="SubmissionChannel"]').val(),
-            DisasterType: $('#submitIncidentOnBehalfForm select[name="DisasterType"]').val(),
-            Priority: $('#submitIncidentOnBehalfForm select[name="Priority"]').val(),
-            LocationText: $('#submitIncidentOnBehalfForm input[name="LocationText"]').val(),
-            LocationGpsLat: $('#submitIncidentOnBehalfForm input[name="LocationGpsLat"]').val(),
-            LocationGpsLng: $('#submitIncidentOnBehalfForm input[name="LocationGpsLng"]').val(),
-            MobileNumber: $('#submitIncidentOnBehalfForm input[name="MobileNumber"]').val(),
-            Details: $('#submitIncidentOnBehalfForm textarea[name="Details"]').val()
-        };
+        const payload = $('#submitIncidentOnBehalfForm').serialize();
 
         $.ajax({
             url: '/Incidents/SubmitOnBehalf',
             type: 'POST',
             headers: { 'X-CSRF-TOKEN': antiForgeryToken() },
-            contentType: 'application/json; charset=utf-8',
-            data: JSON.stringify(payload),
+            data: payload,
             success: function (response) {
                 if (response && response.success) {
                     notifySuccess(response.message || 'Incident submitted successfully.');
@@ -258,8 +247,14 @@ const incidentsModule = (function () {
     }
 
     function updateStatus(id) {
+        const selectedStatus = parseInt($('#incidentStatusSelect').val(), 10);
+        if (Number.isNaN(selectedStatus) || selectedStatus <= 0) {
+            notifyError('Please select a valid status.');
+            return;
+        }
+
         const payload = {
-            newStatus: parseInt($('#incidentStatusSelect').val(), 10),
+            newStatus: selectedStatus,
             note: $('#incidentStatusNote').val()
         };
 
@@ -277,8 +272,8 @@ const incidentsModule = (function () {
                     notifyError((response && response.message) || 'Failed to update status.');
                 }
             },
-            error: function () {
-                notifyError('Failed to update status.');
+            error: function (xhr) {
+                notifyError(extractErrorMessage(xhr, 'Failed to update status.'));
             }
         });
     }

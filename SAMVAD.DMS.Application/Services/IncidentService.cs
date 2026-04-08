@@ -758,6 +758,50 @@ public class IncidentService : IIncidentService
             return Result<bool>.Fail("Access denied.");
         }
 
+        var note = request.Note?.Trim();
+
+        if (incident.Status == request.NewStatus)
+        {
+            if (string.IsNullOrWhiteSpace(note))
+            {
+                return Result<bool>.Fail("No status change detected. Add a note or choose a different status.");
+            }
+
+            var oldValuesSnapshot = SerializeIncidentAuditSnapshot(incident);
+            incident.UpdatedAt = DateTime.UtcNow;
+
+            if (incident.Status == IncidentStatus.Closed)
+            {
+                incident.ResolutionNote = note;
+            }
+
+            _unitOfWork.Update(incident);
+
+            await _unitOfWork.AddAsync(new IncidentStatusHistory
+            {
+                Id = Guid.NewGuid(),
+                IncidentId = incident.Id,
+                FromStatus = incident.Status,
+                ToStatus = incident.Status,
+                ChangedById = userId,
+                ChangedByName = userName,
+                Note = note,
+                Timestamp = DateTime.UtcNow
+            }, cancellationToken);
+
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+            await _auditService.LogAuditAsync(
+                userId,
+                "StatusNoteUpdated",
+                nameof(Incident),
+                incident.Id.ToString(),
+                oldValuesSnapshot,
+                SerializeIncidentAuditSnapshot(incident),
+                cancellationToken);
+
+            return Result<bool>.Succeed(true, "Note updated.");
+        }
+
         if (!IsValidTransition(incident.Status, request.NewStatus, request.Note))
         {
             return Result<bool>.Fail("Invalid status transition.");
@@ -771,7 +815,7 @@ public class IncidentService : IIncidentService
         if (request.NewStatus == IncidentStatus.Closed)
         {
             incident.ClosedAt = DateTime.UtcNow;
-            incident.ResolutionNote = request.Note;
+            incident.ResolutionNote = note;
         }
 
         _unitOfWork.Update(incident);
@@ -784,7 +828,7 @@ public class IncidentService : IIncidentService
             ToStatus = request.NewStatus,
             ChangedById = userId,
             ChangedByName = userName,
-            Note = request.Note ?? string.Empty,
+            Note = note ?? string.Empty,
             Timestamp = DateTime.UtcNow
         }, cancellationToken);
 

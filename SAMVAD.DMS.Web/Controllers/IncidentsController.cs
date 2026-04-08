@@ -53,7 +53,7 @@ public class IncidentsController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> SubmitOnBehalf([FromBody] IncidentAdminSubmitDto model)
+    public async Task<IActionResult> SubmitOnBehalf(IncidentAdminSubmitDto model)
     {
         if (!ModelState.IsValid)
         {
@@ -80,8 +80,24 @@ public class IncidentsController : Controller
             return Json(new { success = false, message = string.IsNullOrWhiteSpace(firstError) ? "Invalid status update request." : firstError });
         }
 
-        var response = await _httpService.PatchAsync<ApiResponseDto<bool>>($"api/incidents/{id}/status", model);
-        return Json(new { success = response?.Success == true, message = response?.Message });
+        try
+        {
+            var response = await _httpService.PatchAsync<ApiResponseDto<bool>>($"api/incidents/{id}/status", model);
+            if (response is null)
+            {
+                return Json(new { success = false, message = "No response received from API." });
+            }
+
+            return Json(new
+            {
+                success = response.Success,
+                message = response.Message ?? (response.Success ? "Status updated." : "Failed to update status.")
+            });
+        }
+        catch
+        {
+            return Json(new { success = false, message = "Failed to update status." });
+        }
     }
 
     [HttpPost]
