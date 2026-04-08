@@ -1,91 +1,276 @@
 @model IReadOnlyCollection<SAMVAD.DMS.Application.DTOs.District.DistrictPublicOptionDto>
 @{
     Layout = "_PublicLayout";
-    ViewData["Title"] = "SAMVAD DMS Portal";
+    ViewData["Title"] = "SAMVAD DMS — State Disaster Management Portal";
+    var stateName = Model.FirstOrDefault()?.State ?? "Sikkim";
 }
 
-<div class="min-h-screen bg-gradient-to-b from-orange-50 via-white to-slate-100">
-    <header class="border-b border-orange-100 bg-white/95 backdrop-blur sticky top-0 z-10">
-        <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <span class="h-10 w-10 rounded-lg bg-orange-600 text-white flex items-center justify-center font-extrabold">S</span>
-                <div>
-                    <p class="text-sm font-extrabold tracking-wide text-slate-900">SAMVAD DMS</p>
-                    <p class="text-[11px] font-semibold text-slate-500">Government Disaster Management System</p>
-                </div>
-            </div>
-            <a href="/Account/Login" class="inline-flex items-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">Admin Login</a>
-        </div>
-    </header>
+<!-- Tricolor Band -->
+<div class="flex h-1.5">
+    <div class="flex-1 bg-[#FF9933]"></div>
+    <div class="flex-1 bg-white"></div>
+    <div class="flex-1 bg-[#138808]"></div>
+</div>
 
+<!-- Government Top Bar -->
+<div class="bg-[#1a2a4a] text-white">
+    <div class="max-w-7xl mx-auto px-4 py-2 flex flex-wrap items-center justify-between gap-2">
+        <div class="flex items-center gap-3">
+            <!-- Ashoka Emblem placeholder (text-based) -->
+            <div class="flex items-center justify-center h-12 w-12 bg-white rounded-full">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Emblem_of_India.svg/120px-Emblem_of_India.svg.png" alt="National Emblem of India" class="h-10 w-10 object-contain" />
+            </div>
+            <div>
+                <p class="text-[13px] md:text-sm font-bold tracking-wide">Government of @stateName</p>
+                <p class="text-[10px] md:text-xs text-slate-300">State Disaster Management Authority</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-4 text-xs">
+            <a href="#main-content" class="text-slate-300 hover:text-white hidden md:inline">Skip to Content</a>
+            <span class="text-slate-500 hidden md:inline">|</span>
+            <a href="/Account/Login" class="text-slate-300 hover:text-white font-semibold">Admin Login</a>
+        </div>
+    </div>
+</div>
+
+<!-- Main Navigation Bar -->
+<nav class="bg-[#0d1b36] border-t border-white/10 sticky top-0 z-20">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="flex items-center justify-between h-12">
+            <div class="flex items-center gap-2">
+                <span class="h-8 w-8 rounded bg-orange-600 text-white flex items-center justify-center font-extrabold text-sm">S</span>
+                <span class="text-white font-bold text-sm tracking-wide">SAMVAD DMS</span>
+            </div>
+            <div class="flex items-center gap-1 text-xs font-semibold">
+                <a href="/" class="px-3 py-2 rounded text-white bg-white/10">Home</a>
+                <a href="/report" class="px-3 py-2 rounded text-slate-300 hover:text-white hover:bg-white/10">Report Disaster</a>
+                <a href="#how-to-report" class="px-3 py-2 rounded text-slate-300 hover:text-white hover:bg-white/10 hidden md:inline">How It Works</a>
+                <a href="#emergency-contacts" class="px-3 py-2 rounded text-slate-300 hover:text-white hover:bg-white/10 hidden md:inline">Emergency Contacts</a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div class="min-h-screen bg-gradient-to-b from-orange-50 via-white to-slate-100" id="main-content">
     <main>
-        <section class="max-w-6xl mx-auto px-4 py-10 md:py-14">
-            <div class="rounded-3xl bg-slate-900 text-white p-6 md:p-10 relative overflow-hidden">
-                <div class="absolute -top-14 -right-14 h-48 w-48 rounded-full bg-orange-400/25"></div>
-                <div class="absolute -bottom-16 -left-16 h-56 w-56 rounded-full bg-orange-300/15"></div>
+        <!-- Hero Section -->
+        <section class="max-w-7xl mx-auto px-4 py-8 md:py-12">
+            <div class="rounded-2xl bg-[#0d1b36] text-white p-6 md:p-10 relative overflow-hidden">
+                <div class="absolute -top-14 -right-14 h-48 w-48 rounded-full bg-orange-400/20"></div>
+                <div class="absolute -bottom-16 -left-16 h-56 w-56 rounded-full bg-orange-300/10"></div>
                 <div class="relative max-w-3xl">
                     <p class="text-xs font-bold tracking-[0.2em] uppercase text-orange-300">Citizen Portal</p>
-                    <h1 class="mt-2 text-3xl md:text-5xl font-extrabold leading-tight">One Unified Portal For Disaster Reporting</h1>
-                    <p class="mt-4 text-sm md:text-base text-slate-200">Report incidents quickly, attach evidence, and get a secure tracking link by SMS. This portal is for citizens; district/admin login is separate.</p>
+                    <h1 class="mt-2 text-2xl md:text-4xl font-extrabold leading-tight">State Disaster Management<br>Reporting &amp; Monitoring System</h1>
+                    <p class="mt-4 text-sm md:text-base text-slate-300">Report incidents quickly, attach evidence, and receive a secure tracking link by SMS. This portal is available to all citizens of @stateName for disaster reporting and status tracking.</p>
                     <div class="mt-6 flex flex-wrap gap-3">
-                        <a href="/report" class="inline-flex items-center rounded-2xl bg-orange-500 px-5 py-3 text-sm font-extrabold text-white shadow-lg shadow-orange-500/30 hover:bg-orange-400">Click Here To Report Disaster</a>
-                        <a href="#how-to-report" class="inline-flex items-center rounded-2xl border border-slate-500 px-5 py-3 text-sm font-semibold text-white hover:bg-slate-800">How It Works</a>
+                        <a href="/report" class="inline-flex items-center rounded-xl bg-orange-500 px-5 py-3 text-sm font-extrabold text-white shadow-lg shadow-orange-500/30 hover:bg-orange-400 transition">Report A Disaster</a>
+                        <a href="#how-to-report" class="inline-flex items-center rounded-xl border border-slate-500 px-5 py-3 text-sm font-semibold text-white hover:bg-white/10 transition">How It Works</a>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section class="max-w-6xl mx-auto px-4 pb-8">
+        <!-- Quick Action Cards -->
+        <section class="max-w-7xl mx-auto px-4 pb-8">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <a href="/report" class="rounded-2xl border-2 border-dashed border-orange-300 bg-orange-50 p-5 hover:bg-orange-100 transition-colors">
-                    <p class="text-xs font-bold uppercase tracking-[0.18em] text-orange-700">Public Notice</p>
-                    <h2 class="mt-2 text-xl font-extrabold text-slate-900">Click Here To Report</h2>
-                    <p class="mt-2 text-sm text-slate-600">Emergency and standard incidents can be submitted in a 3-step guided form.</p>
+                <a href="/report" class="rounded-xl border-2 border-dashed border-orange-300 bg-orange-50 p-5 hover:bg-orange-100 transition-colors group">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="flex h-8 w-8 items-center justify-center rounded-full bg-orange-600 text-white text-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        </span>
+                        <p class="text-xs font-bold uppercase tracking-[0.18em] text-orange-700">Report Now</p>
+                    </div>
+                    <h2 class="text-lg font-extrabold text-slate-900 group-hover:text-orange-700 transition">Submit Disaster Report</h2>
+                    <p class="mt-1 text-sm text-slate-600">Submit emergency and standard incident reports through a guided 3-step form.</p>
                 </a>
-                <a href="/report" class="rounded-2xl border border-slate-200 bg-white p-5 hover:border-orange-300 transition-colors">
-                    <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Citizen Action</p>
-                    <h2 class="mt-2 text-xl font-extrabold text-slate-900">Report With Location + Media</h2>
-                    <p class="mt-2 text-sm text-slate-600">Upload photos/videos and capture GPS location to speed up response.</p>
+                <a href="/report" class="rounded-xl border border-slate-200 bg-white p-5 hover:border-orange-300 transition group">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="flex h-8 w-8 items-center justify-center rounded-full bg-blue-600 text-white text-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a2 2 0 01-2.828 0l-4.243-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                        </span>
+                        <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Location &amp; Media</p>
+                    </div>
+                    <h2 class="text-lg font-extrabold text-slate-900 group-hover:text-blue-700 transition">Upload Photos &amp; GPS</h2>
+                    <p class="mt-1 text-sm text-slate-600">Attach photo/video evidence and capture GPS coordinates to assist response teams.</p>
                 </a>
-                <a href="/report" class="rounded-2xl border border-slate-200 bg-white p-5 hover:border-orange-300 transition-colors">
-                    <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Instant Tracking</p>
-                    <h2 class="mt-2 text-xl font-extrabold text-slate-900">Track Status By SMS Link</h2>
-                    <p class="mt-2 text-sm text-slate-600">Receive incident ID and secure status tracking link on your phone.</p>
+                <a href="/report" class="rounded-xl border border-slate-200 bg-white p-5 hover:border-orange-300 transition group">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-600 text-white text-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        </span>
+                        <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">SMS Tracking</p>
+                    </div>
+                    <h2 class="text-lg font-extrabold text-slate-900 group-hover:text-emerald-700 transition">Track Status Via SMS</h2>
+                    <p class="mt-1 text-sm text-slate-600">Receive your incident ID and a secure tracking link directly on your mobile phone.</p>
                 </a>
             </div>
         </section>
 
-        <section id="how-to-report" class="max-w-6xl mx-auto px-4 pb-10 md:pb-14">
-            <div class="rounded-3xl border border-slate-200 bg-white p-6 md:p-8">
-                <h3 class="text-2xl font-extrabold text-slate-900">How To Report</h3>
-                <div class="mt-4 grid grid-cols-1 md:grid-cols-4 gap-3">
-                    <div class="rounded-xl bg-slate-50 border border-slate-200 p-4">
-                        <p class="text-xs font-bold text-orange-700">Step 1</p>
-                        <p class="mt-1 text-sm font-semibold text-slate-900">Choose disaster type and priority</p>
+        <!-- How To Report -->
+        <section id="how-to-report" class="max-w-7xl mx-auto px-4 pb-8 md:pb-12">
+            <div class="rounded-xl border border-slate-200 bg-white p-6 md:p-8">
+                <h3 class="text-xl font-extrabold text-slate-900">How To Report A Disaster</h3>
+                <p class="mt-1 text-sm text-slate-500">Follow these simple steps to submit your report</p>
+                <div class="mt-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+                    <div class="rounded-lg bg-slate-50 border border-slate-200 p-4 relative">
+                        <span class="absolute -top-3 left-3 bg-orange-600 text-white text-[10px] font-bold px-2 py-0.5 rounded">Step 1</span>
+                        <p class="mt-1 text-sm font-semibold text-slate-900">Choose disaster type and priority level</p>
                     </div>
-                    <div class="rounded-xl bg-slate-50 border border-slate-200 p-4">
-                        <p class="text-xs font-bold text-orange-700">Step 2</p>
-                        <p class="mt-1 text-sm font-semibold text-slate-900">Select district, add location and media</p>
+                    <div class="rounded-lg bg-slate-50 border border-slate-200 p-4 relative">
+                        <span class="absolute -top-3 left-3 bg-orange-600 text-white text-[10px] font-bold px-2 py-0.5 rounded">Step 2</span>
+                        <p class="mt-1 text-sm font-semibold text-slate-900">Select district, add location &amp; attach media</p>
                     </div>
-                    <div class="rounded-xl bg-slate-50 border border-slate-200 p-4">
-                        <p class="text-xs font-bold text-orange-700">Step 3</p>
-                        <p class="mt-1 text-sm font-semibold text-slate-900">Review details and submit</p>
+                    <div class="rounded-lg bg-slate-50 border border-slate-200 p-4 relative">
+                        <span class="absolute -top-3 left-3 bg-orange-600 text-white text-[10px] font-bold px-2 py-0.5 rounded">Step 3</span>
+                        <p class="mt-1 text-sm font-semibold text-slate-900">Review all details, then submit report</p>
                     </div>
-                    <div class="rounded-xl bg-slate-50 border border-slate-200 p-4">
-                        <p class="text-xs font-bold text-orange-700">After Submit</p>
-                        <p class="mt-1 text-sm font-semibold text-slate-900">Receive tracking link through SMS</p>
+                    <div class="rounded-lg bg-slate-50 border border-slate-200 p-4 relative">
+                        <span class="absolute -top-3 left-3 bg-emerald-600 text-white text-[10px] font-bold px-2 py-0.5 rounded">Done</span>
+                        <p class="mt-1 text-sm font-semibold text-slate-900">Receive tracking link via SMS on your phone</p>
                     </div>
                 </div>
-
-                <div class="mt-6 flex flex-wrap gap-3">
-                    <a href="/report" class="inline-flex items-center rounded-2xl bg-orange-600 px-5 py-3 text-sm font-extrabold text-white hover:bg-orange-500">Start Reporting</a>
-                    <a href="/Account/Login" class="inline-flex items-center rounded-2xl border border-slate-300 px-5 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50">Admin Login</a>
+                <div class="mt-6">
+                    <a href="/report" class="inline-flex items-center rounded-xl bg-orange-600 px-5 py-3 text-sm font-extrabold text-white hover:bg-orange-500 transition">Start Reporting Now</a>
                 </div>
+            </div>
+        </section>
 
-                <p class="mt-6 text-xs text-slate-500">
-                    Active districts in system: <span class="font-semibold">@Model.Count</span>
-                </p>
+        <!-- Active Districts -->
+        <section class="max-w-7xl mx-auto px-4 pb-8 md:pb-12">
+            <div class="rounded-xl border border-slate-200 bg-white p-6 md:p-8">
+                <h3 class="text-xl font-extrabold text-slate-900">Active Districts</h3>
+                <p class="mt-1 text-sm text-slate-500">The following districts are currently active in the DMS system</p>
+                <div class="mt-4 flex flex-wrap gap-2">
+                    @foreach (var district in Model)
+                    {
+                        <span class="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-700">@district.Name</span>
+                    }
+                </div>
+                <p class="mt-4 text-xs text-slate-400">Total active districts: <span class="font-bold">@Model.Count</span></p>
+            </div>
+        </section>
+
+        <!-- Emergency Contacts -->
+        <section id="emergency-contacts" class="max-w-7xl mx-auto px-4 pb-8 md:pb-12">
+            <div class="rounded-xl border border-red-200 bg-red-50 p-6 md:p-8">
+                <h3 class="text-xl font-extrabold text-red-900">Emergency Helpline Numbers</h3>
+                <p class="mt-1 text-sm text-red-700/70">In case of life-threatening emergencies, call the numbers below immediately</p>
+                <div class="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                    <div class="bg-white rounded-lg border border-red-200 p-3 text-center">
+                        <p class="text-2xl font-extrabold text-red-700">112</p>
+                        <p class="text-xs text-slate-600 font-semibold mt-1">National Emergency</p>
+                    </div>
+                    <div class="bg-white rounded-lg border border-red-200 p-3 text-center">
+                        <p class="text-2xl font-extrabold text-red-700">1070</p>
+                        <p class="text-xs text-slate-600 font-semibold mt-1">Disaster Management</p>
+                    </div>
+                    <div class="bg-white rounded-lg border border-red-200 p-3 text-center">
+                        <p class="text-2xl font-extrabold text-red-700">100</p>
+                        <p class="text-xs text-slate-600 font-semibold mt-1">Police</p>
+                    </div>
+                    <div class="bg-white rounded-lg border border-red-200 p-3 text-center">
+                        <p class="text-2xl font-extrabold text-red-700">101</p>
+                        <p class="text-xs text-slate-600 font-semibold mt-1">Fire Service</p>
+                    </div>
+                    <div class="bg-white rounded-lg border border-red-200 p-3 text-center">
+                        <p class="text-2xl font-extrabold text-red-700">108</p>
+                        <p class="text-xs text-slate-600 font-semibold mt-1">Ambulance</p>
+                    </div>
+                    <div class="bg-white rounded-lg border border-red-200 p-3 text-center">
+                        <p class="text-2xl font-extrabold text-red-700">1078</p>
+                        <p class="text-xs text-slate-600 font-semibold mt-1">Flood / Disaster</p>
+                    </div>
+                    <div class="bg-white rounded-lg border border-red-200 p-3 text-center">
+                        <p class="text-2xl font-extrabold text-red-700">1091</p>
+                        <p class="text-xs text-slate-600 font-semibold mt-1">Women Helpline</p>
+                    </div>
+                    <div class="bg-white rounded-lg border border-red-200 p-3 text-center">
+                        <p class="text-2xl font-extrabold text-red-700">1098</p>
+                        <p class="text-xs text-slate-600 font-semibold mt-1">Child Helpline</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Important Links -->
+        <section class="max-w-7xl mx-auto px-4 pb-8 md:pb-12">
+            <div class="rounded-xl border border-slate-200 bg-white p-6 md:p-8">
+                <h3 class="text-xl font-extrabold text-slate-900">Important Links</h3>
+                <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                    <a href="https://ndma.gov.in" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 rounded-lg border border-slate-200 p-3 hover:border-orange-300 transition text-sm font-semibold text-slate-700 hover:text-orange-700">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                        National Disaster Management Authority
+                    </a>
+                    <a href="https://india.gov.in" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 rounded-lg border border-slate-200 p-3 hover:border-orange-300 transition text-sm font-semibold text-slate-700 hover:text-orange-700">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                        National Portal of India
+                    </a>
+                    <a href="https://www.sikkim.gov.in" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 rounded-lg border border-slate-200 p-3 hover:border-orange-300 transition text-sm font-semibold text-slate-700 hover:text-orange-700">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                        Government of @stateName
+                    </a>
+                    <a href="https://imd.gov.in" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 rounded-lg border border-slate-200 p-3 hover:border-orange-300 transition text-sm font-semibold text-slate-700 hover:text-orange-700">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                        India Meteorological Dept.
+                    </a>
+                    <a href="https://nidm.gov.in" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 rounded-lg border border-slate-200 p-3 hover:border-orange-300 transition text-sm font-semibold text-slate-700 hover:text-orange-700">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                        National Institute of Disaster Management
+                    </a>
+                    <a href="https://sachet.ndma.gov.in" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 rounded-lg border border-slate-200 p-3 hover:border-orange-300 transition text-sm font-semibold text-slate-700 hover:text-orange-700">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                        SACHET Early Warning
+                    </a>
+                </div>
             </div>
         </section>
     </main>
+</div>
+
+<!-- Footer -->
+<footer class="bg-[#0d1b36] text-white">
+    <div class="max-w-7xl mx-auto px-4 py-8">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div>
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="h-8 w-8 rounded bg-orange-600 text-white flex items-center justify-center font-extrabold text-sm">S</span>
+                    <span class="font-bold text-sm">SAMVAD DMS</span>
+                </div>
+                <p class="text-xs text-slate-400 leading-relaxed">State Disaster Management Reporting &amp; Monitoring System. A digital initiative by the Government of @stateName for efficient disaster reporting, tracking and response coordination.</p>
+            </div>
+            <div>
+                <p class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Quick Links</p>
+                <ul class="space-y-1.5 text-sm">
+                    <li><a href="/" class="text-slate-300 hover:text-white transition">Home</a></li>
+                    <li><a href="/report" class="text-slate-300 hover:text-white transition">Report Disaster</a></li>
+                    <li><a href="/Account/Login" class="text-slate-300 hover:text-white transition">Admin Login</a></li>
+                    <li><a href="https://ndma.gov.in" target="_blank" rel="noopener noreferrer" class="text-slate-300 hover:text-white transition">NDMA</a></li>
+                </ul>
+            </div>
+            <div>
+                <p class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Contact</p>
+                <ul class="space-y-1.5 text-sm text-slate-300">
+                    <li>State Disaster Management Authority</li>
+                    <li>Government of @stateName</li>
+                    <li>Emergency: <span class="font-bold text-white">112</span></li>
+                    <li>Disaster Helpline: <span class="font-bold text-white">1070</span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="border-t border-white/10">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex flex-wrap items-center justify-between gap-2">
+            <p class="text-[11px] text-slate-500">&copy; @DateTime.Now.Year Government of @stateName. All Rights Reserved.</p>
+            <div class="flex items-center gap-3 text-[11px] text-slate-500">
+                <span>Disclaimer: Content on this portal is published and managed by the State Disaster Management Authority.</span>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- Tricolor Band Bottom -->
+<div class="flex h-1">
+    <div class="flex-1 bg-[#FF9933]"></div>
+    <div class="flex-1 bg-white"></div>
+    <div class="flex-1 bg-[#138808]"></div>
 </div>

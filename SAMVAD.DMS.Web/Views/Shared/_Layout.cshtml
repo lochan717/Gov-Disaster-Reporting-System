@@ -59,8 +59,11 @@
                 <a asp-controller="Dashboard" asp-action="Index" class="@NavItemClass("Dashboard") admin-nav-link">Dashboard</a>
                 <a asp-controller="Incidents" asp-action="Index" class="@NavItemClass("Incidents") admin-nav-link">All Incidents</a>
                 <a asp-controller="Settings" asp-action="Index" class="@NavItemClass("Settings") admin-nav-link">Settings</a>
-                <a asp-controller="Districts" asp-action="Index" class="@NavItemClass("Districts") admin-nav-link">Manage Districts</a>
-                <a asp-controller="Admins" asp-action="Index" class="@NavItemClass("Admins") admin-nav-link">Manage Admins</a>
+                @if (User.IsInRole("SuperAdmin"))
+                {
+                    <a asp-controller="Districts" asp-action="Index" class="@NavItemClass("Districts") admin-nav-link">Manage Districts</a>
+                    <a asp-controller="Admins" asp-action="Index" class="@NavItemClass("Admins") admin-nav-link">Manage Admins</a>
+                }
             </aside>
 
             <main class="flex-1 overflow-y-auto p-4 md:p-6">

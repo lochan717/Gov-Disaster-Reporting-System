@@ -41,4 +41,11 @@ public class DashboardController : Controller
         var response = await _httpService.PostAsync<ApiResponseDto<PaginatedResult<IncidentListItemDto>>>("api/incidents/list", filter);
         return Json(new { success = response?.Success == true, data = response?.Data, message = response?.Message });
     }
+
+    [HttpGet]
+    public async Task<IActionResult> Detail(Guid id)
+    {
+        var response = await _httpService.GetAsync<ApiResponseDto<IncidentDetailDto>>($"api/incidents/{id}");
+        return PartialView("~/Views/Incidents/_Detail.cshtml", response?.Data);
+    }
 }

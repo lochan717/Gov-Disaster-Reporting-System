@@ -149,7 +149,7 @@ public class IncidentService : IIncidentService
     {
         var districts = _unitOfWork.Query<District>()
             .Where(x => x.IsActive)
-            .Where(x => isSuperAdmin || assignedDistrictIds.Contains(x.Id))
+            .Where(x => isSuperAdmin || assignedDistrictIds.ToList().Contains(x.Id))
             .OrderBy(x => x.Name)
             .Select(x => new IncidentSubmissionDistrictOptionDto
             {
@@ -532,11 +532,12 @@ public class IncidentService : IIncidentService
 
     private IQueryable<Incident> BuildFilteredIncidentQuery(IncidentFilterDto filter, bool isSuperAdmin, IReadOnlyCollection<Guid> assignedDistrictIds)
     {
+        var districtFilter = assignedDistrictIds.ToList();
         var incidents = _unitOfWork.Query<Incident>().AsQueryable();
 
         if (!isSuperAdmin)
         {
-            incidents = incidents.Where(x => assignedDistrictIds.Contains(x.DistrictId));
+            incidents = incidents.Where(x => districtFilter.Contains(x.DistrictId));
         }
 
         if (filter.DistrictId.HasValue)
@@ -998,7 +999,7 @@ public class IncidentService : IIncidentService
     {
         container.Column(column =>
         {
-            column.Spacing(4);
+            column.Spacing(8);
             column.Item().Text("Visual Evidence").SemiBold().FontSize(13);
 
             if (!incident.MediaFiles.Any())
@@ -1007,41 +1008,59 @@ public class IncidentService : IIncidentService
                 return;
             }
 
-            column.Item().Table(table =>
+            var photos = incident.MediaFiles.Where(m => m.MediaType == IncidentMediaType.Photo).ToArray();
+            var videos = incident.MediaFiles.Where(m => m.MediaType != IncidentMediaType.Photo).ToArray();
+
+            if (photos.Length > 0)
             {
-                table.ColumnsDefinition(columns =>
+                foreach (var photo in photos)
                 {
-                    columns.RelativeColumn(2);
-                    columns.RelativeColumn(4);
-                    columns.RelativeColumn(2);
-                    columns.RelativeColumn(3);
-                });
-
-                table.Header(header =>
-                {
-                    header.Cell().Element(HeaderCell).Text("Preview");
-                    header.Cell().Element(HeaderCell).Text("File Name");
-                    header.Cell().Element(HeaderCell).Text("Type");
-                    header.Cell().Element(HeaderCell).Text("Uploaded At (UTC)");
-                });
-
-                foreach (var media in incident.MediaFiles)
-                {
-                    table.Cell().Element(BodyCell).AlignCenter().Element(container =>
+                    var capturedPhoto = photo;
+                    if (TryReadMediaFile(capturedPhoto.FilePath, out var imageBytes) && imageBytes.Length > 0)
                     {
-                        if (media.MediaType == IncidentMediaType.Photo && TryReadMediaFile(media.FilePath, out var imageBytes) && imageBytes.Length > 0)
+                        var capturedBytes = imageBytes;
+                        column.Item().Element(c =>
                         {
-                            container.Height(64).Image(imageBytes).FitArea();
-                            return;
-                        }
-
-                        container.Text(media.MediaType == IncidentMediaType.Video ? "[Video]" : "[Photo]");
-                    });
-                    table.Cell().Element(BodyCell).Text(media.FileName);
-                    table.Cell().Element(BodyCell).Text(media.MediaType.ToString());
-                    table.Cell().Element(BodyCell).Text(media.UploadedAt.ToString("yyyy-MM-dd HH:mm:ss"));
+                            c.Border(1).BorderColor(Colors.Grey.Lighten2).Padding(4).Column(inner =>
+                            {
+                                inner.Item().MaxHeight(680).Image(capturedBytes).FitArea();
+                                inner.Item().PaddingTop(4).Text($"Uploaded: {capturedPhoto.UploadedAt:yyyy-MM-dd HH:mm} UTC  |  Source: {capturedPhoto.UploadedBy}")
+                                    .FontSize(8).FontColor(Colors.Grey.Darken1);
+                            });
+                        });
+                    }
+                    else
+                    {
+                        column.Item().Text($"[Photo file unavailable — {capturedPhoto.UploadedAt:yyyy-MM-dd HH:mm} UTC]")
+                            .FontSize(9).FontColor(Colors.Grey.Darken1);
+                    }
                 }
-            });
+            }
+
+            if (videos.Length > 0)
+            {
+                column.Item().PaddingTop(4).Text("Video Attachments").SemiBold().FontSize(11);
+                column.Item().Table(table =>
+                {
+                    table.ColumnsDefinition(columns =>
+                    {
+                        columns.RelativeColumn(3);
+                        columns.RelativeColumn(3);
+                    });
+
+                    table.Header(header =>
+                    {
+                        header.Cell().Element(HeaderCell).Text("Type");
+                        header.Cell().Element(HeaderCell).Text("Uploaded At (UTC)");
+                    });
+
+                    foreach (var video in videos)
+                    {
+                        table.Cell().Element(BodyCell).Text(video.MediaType.ToString());
+                        table.Cell().Element(BodyCell).Text(video.UploadedAt.ToString("yyyy-MM-dd HH:mm:ss"));
+                    }
+                });
+            }
         });
     }
 

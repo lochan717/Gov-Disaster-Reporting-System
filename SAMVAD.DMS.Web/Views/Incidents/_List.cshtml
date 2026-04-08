@@ -1,5 +1,45 @@
 @model SAMVAD.DMS.Shared.Models.PaginatedResult<SAMVAD.DMS.Application.DTOs.Incident.IncidentListItemDto>
 
+@{
+    string StatusBadgeCss(SAMVAD.DMS.Domain.Enums.IncidentStatus status)
+    {
+        return status switch
+        {
+            SAMVAD.DMS.Domain.Enums.IncidentStatus.Open => "bg-amber-50 text-amber-700 border-amber-200",
+            SAMVAD.DMS.Domain.Enums.IncidentStatus.InProgress => "bg-blue-50 text-blue-700 border-blue-200",
+            SAMVAD.DMS.Domain.Enums.IncidentStatus.Closed => "bg-emerald-50 text-emerald-700 border-emerald-200",
+            _ => "bg-slate-100 text-slate-700 border-slate-200"
+        };
+    }
+
+    string StatusDotCss(SAMVAD.DMS.Domain.Enums.IncidentStatus status)
+    {
+        return status switch
+        {
+            SAMVAD.DMS.Domain.Enums.IncidentStatus.Open => "bg-amber-500",
+            SAMVAD.DMS.Domain.Enums.IncidentStatus.InProgress => "bg-blue-500",
+            SAMVAD.DMS.Domain.Enums.IncidentStatus.Closed => "bg-emerald-500",
+            _ => "bg-slate-400"
+        };
+    }
+
+    string StatusLabel(SAMVAD.DMS.Domain.Enums.IncidentStatus status)
+    {
+        return status switch
+        {
+            SAMVAD.DMS.Domain.Enums.IncidentStatus.InProgress => "In Progress",
+            _ => status.ToString()
+        };
+    }
+
+    string PriorityBadgeCss(SAMVAD.DMS.Domain.Enums.IncidentPriority priority)
+    {
+        return priority == SAMVAD.DMS.Domain.Enums.IncidentPriority.Emergency
+            ? "bg-red-50 text-red-700 border-red-200"
+            : "bg-slate-50 text-slate-600 border-slate-200";
+    }
+}
+
 <div id="incidentsListMeta" data-page="@Model.Page" data-page-size="@Model.PageSize" data-total-count="@Model.TotalCount" data-total-pages="@Model.TotalPages" data-has-previous="@Model.HasPreviousPage.ToString().ToLowerInvariant()" data-has-next="@Model.HasNextPage.ToString().ToLowerInvariant()"></div>
 
 <div class="space-y-3 md:hidden">
@@ -14,13 +54,19 @@
             <button type="button" class="text-sm font-semibold text-orange-700 hover:underline incident-detail-btn" data-incident-id="@item.Id">
                 @item.IncidentId
             </button>
-            <span class="inline-flex items-center rounded-full bg-slate-100 text-slate-700 px-2 py-1 text-xs font-semibold">@item.Status</span>
+            <span class="inline-flex items-center gap-1 rounded-full border px-2 py-1 text-xs font-semibold @StatusBadgeCss(item.Status)">
+                <span class="w-1.5 h-1.5 rounded-full @StatusDotCss(item.Status)"></span>
+                @StatusLabel(item.Status)
+            </span>
         </div>
 
         <div class="mt-2 grid grid-cols-2 gap-2 text-xs text-slate-600">
+            <p><span class="font-semibold text-slate-700">District:</span> @item.DistrictName</p>
             <p><span class="font-semibold text-slate-700">Type:</span> @item.DisasterType</p>
             <p><span class="font-semibold text-slate-700">Priority:</span> @item.Priority</p>
+            <p><span class="font-semibold text-slate-700">Reported:</span> @item.CreatedAt.ToString("yyyy-MM-dd HH:mm") UTC</p>
         </div>
+        <p class="mt-2 text-xs text-slate-600"><span class="font-semibold text-slate-700">Location:</span> @item.LocationText</p>
 
         <div class="mt-4">
             <a asp-action="ExportPdf" asp-route-id="@item.Id" class="text-xs font-semibold text-slate-700 hover:text-orange-700">Export PDF</a>
@@ -34,13 +80,22 @@
         <thead>
             <tr class="text-xs uppercase text-slate-500">
                 <th class="py-2">Incident ID</th>
+                <th>District</th>
                 <th>Type</th>
                 <th>Priority</th>
                 <th>Status</th>
+                <th>Location</th>
+                <th>Reported At (UTC)</th>
                 <th class="text-right">Actions</th>
             </tr>
         </thead>
         <tbody>
+        @if (!Model.Items.Any())
+        {
+            <tr class="border-t border-slate-100 text-sm text-slate-500">
+                <td class="py-3" colspan="8">No incidents found for the selected filters.</td>
+            </tr>
+        }
         @foreach (var item in Model.Items)
         {
             <tr class="border-t border-slate-100 text-sm text-slate-700" data-incident-row-id="@item.Id">
@@ -49,9 +104,17 @@
                         @item.IncidentId
                     </button>
                 </td>
-                <td>@item.DisasterType</td>
-                <td>@item.Priority</td>
-                <td>@item.Status</td>
+                <td>@item.DistrictName</td>
+                <td><span class="inline-flex items-center rounded-lg text-xs font-bold">@item.DisasterType</span></td>
+                <td><span class="inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-bold uppercase @PriorityBadgeCss(item.Priority)">@item.Priority</span></td>
+                <td>
+                    <span class="inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold @StatusBadgeCss(item.Status)">
+                        <span class="w-1.5 h-1.5 rounded-full @StatusDotCss(item.Status)"></span>
+                        @StatusLabel(item.Status)
+                    </span>
+                </td>
+                <td class="max-w-xs truncate" title="@item.LocationText">@item.LocationText</td>
+                <td>@item.CreatedAt.ToString("yyyy-MM-dd HH:mm")</td>
                 <td class="text-right">
                     <a asp-action="ExportPdf" asp-route-id="@item.Id" class="text-xs font-semibold text-slate-700 hover:text-orange-700">Export PDF</a>
                 </td>

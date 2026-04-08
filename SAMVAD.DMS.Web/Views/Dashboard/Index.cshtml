@@ -2,9 +2,71 @@
     ViewData["Title"] = "Dashboard";
 }
 
-<div class="space-y-4">
-    <h1 class="text-2xl font-bold text-slate-900">Dashboard</h1>
-    <div class="bg-white border border-slate-200 rounded-2xl p-5">
-        <p class="text-slate-600">Analytics cards and live feed will render here via Ajax.</p>
+<div class="space-y-6">
+    @Html.AntiForgeryToken()
+
+    <div class="flex flex-wrap items-center justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-bold text-slate-900">Dashboard</h1>
+            <p class="text-sm text-slate-500">Analytics &amp; live incident monitoring</p>
+        </div>
+        <div class="flex items-center gap-2">
+            <button type="button" id="dashRefreshBtn" class="rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">Refresh</button>
+        </div>
+    </div>
+
+    <!-- KPI Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="dashKpiHost">
+        <div class="bg-white rounded-xl border border-slate-200 p-5 animate-pulse"><div class="h-4 bg-slate-100 rounded w-24 mb-3"></div><div class="h-8 bg-slate-100 rounded w-16"></div></div>
+        <div class="bg-white rounded-xl border border-slate-200 p-5 animate-pulse"><div class="h-4 bg-slate-100 rounded w-24 mb-3"></div><div class="h-8 bg-slate-100 rounded w-16"></div></div>
+        <div class="bg-white rounded-xl border border-slate-200 p-5 animate-pulse"><div class="h-4 bg-slate-100 rounded w-24 mb-3"></div><div class="h-8 bg-slate-100 rounded w-16"></div></div>
+        <div class="bg-white rounded-xl border border-slate-200 p-5 animate-pulse"><div class="h-4 bg-slate-100 rounded w-24 mb-3"></div><div class="h-8 bg-slate-100 rounded w-16"></div></div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <!-- Incident Distribution (by type) -->
+        <div class="bg-white rounded-xl border border-slate-200 p-5">
+            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Incidents by Type</h3>
+            <div id="dashTypeChart" class="space-y-2">
+                <p class="text-sm text-slate-400">Loading&hellip;</p>
+            </div>
+        </div>
+        <!-- Status Breakdown -->
+        <div class="bg-white rounded-xl border border-slate-200 p-5">
+            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Status Breakdown</h3>
+            <div id="dashStatusChart" class="space-y-2">
+                <p class="text-sm text-slate-400">Loading&hellip;</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Live Incident Feed + Detail Pane -->
+    <div class="grid grid-cols-1 xl:grid-cols-3 gap-4">
+        <div class="xl:col-span-2 bg-white rounded-xl border border-slate-200 overflow-hidden">
+            <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wider">Live Incident Feed</h3>
+                    <span class="px-2 py-0.5 bg-orange-600 text-[10px] text-white rounded font-bold animate-pulse uppercase">Live</span>
+                </div>
+                <p id="dashFeedMeta" class="text-xs text-slate-400"></p>
+            </div>
+            <div class="overflow-x-auto" id="dashFeedHost">
+                <p class="p-5 text-sm text-slate-400">Loading&hellip;</p>
+            </div>
+        </div>
+        <div id="dashDetailHost" class="incident-detail-pane bg-white border border-slate-200 rounded-xl p-5">
+            <div class="mb-3 flex items-center justify-between">
+                <h2 class="text-sm font-semibold text-slate-700">Incident Detail</h2>
+                <button type="button" id="closeDashDetailPaneBtn" class="rounded-lg border border-slate-300 px-2 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-50">Close</button>
+            </div>
+            <div id="dashDetailPaneContent">
+                <p class="text-slate-500 text-sm">Click &ldquo;View&rdquo; on any incident to see details here.</p>
+            </div>
+        </div>
     </div>
 </div>
+
+@section Scripts {
+    <script src="~/js/dashboard.js" asp-append-version="true"></script>
+}

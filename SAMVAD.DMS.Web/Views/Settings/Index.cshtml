@@ -2,9 +2,22 @@
     ViewData["Title"] = "Settings";
 }
 
-<div class="space-y-4 max-w-2xl">
+<div class="space-y-4 max-w-4xl">
     <h1 class="text-2xl font-bold text-slate-900">User Settings</h1>
-    <div class="bg-white rounded-2xl border border-slate-200 p-5">
-        <p class="text-slate-600">Profile and password controls will be loaded here.</p>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div class="bg-white rounded-2xl border border-slate-200 p-5">
+            <h2 class="text-lg font-semibold text-slate-900 mb-3">Profile</h2>
+            <partial name="_ProfileForm" model="new SAMVAD.DMS.Application.DTOs.User.UpdateProfileDto { FullName = ViewBag.CurrentFullName as string ?? string.Empty, ContactNumber = ViewBag.CurrentContactNumber as string }" />
+        </div>
+
+        <div class="bg-white rounded-2xl border border-slate-200 p-5">
+            <h2 class="text-lg font-semibold text-slate-900 mb-3">Change Password</h2>
+            <partial name="_PasswordForm" model="new SAMVAD.DMS.Application.DTOs.User.ChangePasswordDto()" />
+        </div>
     </div>
 </div>
+
+@section Scripts {
+    <script src="~/js/settings.js" asp-append-version="true"></script>
+}

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using SAMVAD.DMS.Application.DTOs.User;
 using SAMVAD.DMS.Shared.Models;
 using SAMVAD.DMS.Web.Services;
@@ -17,7 +18,14 @@ public class SettingsController : Controller
     }
 
     [HttpGet]
-    public IActionResult Index() => View();
+    public async Task<IActionResult> Index()
+    {
+        var profileResponse = await _httpService.GetAsync<ApiResponseDto<UpdateProfileDto>>("api/settings/profile");
+        var profile = profileResponse?.Data;
+        ViewBag.CurrentFullName = profile?.FullName ?? User.FindFirstValue("FullName") ?? User.Identity?.Name ?? string.Empty;
+        ViewBag.CurrentContactNumber = profile?.ContactNumber;
+        return View();
+    }
 
     [HttpPost]
     [ValidateAntiForgeryToken]

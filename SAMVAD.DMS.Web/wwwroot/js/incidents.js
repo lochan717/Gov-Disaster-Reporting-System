@@ -3,11 +3,22 @@ const incidentsModule = (function () {
         page: 1,
         pageSize: 20,
         searchTerm: '',
+        status: '',
+        disasterType: '',
         totalPages: 1,
         totalCount: 0,
         hasPreviousPage: false,
         hasNextPage: false
     };
+
+    function parseNullableInt(value) {
+        if (value === null || value === undefined || value === '') {
+            return null;
+        }
+
+        const parsed = parseInt(value, 10);
+        return Number.isNaN(parsed) ? null : parsed;
+    }
 
     function antiForgeryToken() {
         return document.querySelector('input[name="__RequestVerificationToken"]')?.value || '';
@@ -45,11 +56,15 @@ const incidentsModule = (function () {
 
     function readFiltersFromUi() {
         state.searchTerm = ($('#incidentsSearchInput').val() || '').toString().trim();
+        state.status = ($('#incidentsStatusFilter').val() || '').toString().trim();
+        state.disasterType = ($('#incidentsTypeFilter').val() || '').toString().trim();
         state.pageSize = parseInt(($('#incidentsPageSize').val() || '20').toString(), 10) || 20;
     }
 
     function writeStateToUi() {
         $('#incidentsSearchInput').val(state.searchTerm);
+        $('#incidentsStatusFilter').val(state.status);
+        $('#incidentsTypeFilter').val(state.disasterType);
         $('#incidentsPageSize').val(state.pageSize.toString());
     }
 
@@ -112,6 +127,8 @@ const incidentsModule = (function () {
         }
 
         $('#exportSearchTerm').val(state.searchTerm);
+        $('#exportStatus').val(state.status);
+        $('#exportDisasterType').val(state.disasterType);
         $modal.removeClass('hidden').addClass('flex');
         $('body').addClass('overflow-hidden');
     }
@@ -134,6 +151,8 @@ const incidentsModule = (function () {
 
         form.reset();
         $('#exportSearchTerm').val(state.searchTerm || '');
+        $('#exportStatus').val(state.status || '');
+        $('#exportDisasterType').val(state.disasterType || '');
     }
 
     function loadList(page) {
@@ -150,7 +169,9 @@ const incidentsModule = (function () {
             data: JSON.stringify({
                 page: state.page,
                 pageSize: state.pageSize,
-                searchTerm: state.searchTerm
+                searchTerm: state.searchTerm,
+                status: parseNullableInt(state.status),
+                disasterType: parseNullableInt(state.disasterType)
             }),
             success: function (html) {
                 $('#incidentsListHost').html(html);
@@ -362,6 +383,8 @@ const incidentsModule = (function () {
             state.page = 1;
             state.pageSize = 20;
             state.searchTerm = '';
+            state.status = '';
+            state.disasterType = '';
             writeStateToUi();
             loadList(1);
         });
@@ -392,11 +415,99 @@ const incidentsModule = (function () {
         });
     }
 
+    var statusColorMap = {
+        'Open': { bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-200', dot: 'bg-amber-500' },
+        'InProgress': { bg: 'bg-blue-50', text: 'text-blue-700', border: 'border-blue-200', dot: 'bg-blue-500' },
+        'Closed': { bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200', dot: 'bg-emerald-500' }
+    };
+
+    var typeColorMap = {
+        'Landslide': { bg: 'bg-stone-50', text: 'text-stone-700', border: 'border-stone-200' },
+        'Flood': { bg: 'bg-sky-50', text: 'text-sky-700', border: 'border-sky-200' },
+        'Fire': { bg: 'bg-red-50', text: 'text-red-700', border: 'border-red-200' },
+        'Earthquake': { bg: 'bg-yellow-50', text: 'text-yellow-700', border: 'border-yellow-200' },
+        'RoadBlockage': { bg: 'bg-purple-50', text: 'text-purple-700', border: 'border-purple-200' },
+        'Others': { bg: 'bg-slate-50', text: 'text-slate-600', border: 'border-slate-200' }
+    };
+
+    function loadSummary() {
+        $.ajax({
+            url: '/Dashboard/Analytics',
+            type: 'POST',
+            headers: { 'X-CSRF-TOKEN': antiForgeryToken() },
+            data: {},
+            success: function (response) {
+                if (!response || !response.success || !response.data) {
+                    return;
+                }
+                renderStatusBadges(response.data.statusBreakdown || []);
+                renderTypeBadges(response.data.incidentDistribution || []);
+            },
+            error: function () { }
+        });
+    }
+
+    function renderStatusBadges(items) {
+        var $host = $('#statusCountBadges');
+        if (!$host.length) return;
+        var html = '<span class="text-xs font-semibold text-slate-500 self-center mr-1">By Status:</span>';
+        if (!items.length) {
+            html += '<span class="text-xs text-slate-400">No data</span>';
+        }
+        for (var i = 0; i < items.length; i++) {
+            var item = items[i];
+            var label = formatStatus(item.status);
+            var colors = statusColorMap[statusKeyFromInt(item.status)] || { bg: 'bg-slate-50', text: 'text-slate-600', border: 'border-slate-200', dot: 'bg-slate-400' };
+            html += '<span class="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold ' + colors.bg + ' ' + colors.text + ' ' + colors.border + '">';
+            html += '<span class="w-1.5 h-1.5 rounded-full ' + colors.dot + '"></span>';
+            html += label + ': ' + item.count + '</span>';
+        }
+        $host.html(html);
+    }
+
+    function renderTypeBadges(items) {
+        var $host = $('#typeCountBadges');
+        if (!$host.length) return;
+        var html = '<span class="text-xs font-semibold text-slate-500 self-center mr-1">By Type:</span>';
+        if (!items.length) {
+            html += '<span class="text-xs text-slate-400">No data</span>';
+        }
+        for (var i = 0; i < items.length; i++) {
+            var item = items[i];
+            var label = formatDisasterType(item.disasterType);
+            var colors = typeColorMap[typeKeyFromInt(item.disasterType)] || { bg: 'bg-slate-50', text: 'text-slate-600', border: 'border-slate-200' };
+            html += '<span class="inline-flex items-center gap-1 rounded-full border px-3 py-1 text-xs font-semibold ' + colors.bg + ' ' + colors.text + ' ' + colors.border + '">';
+            html += label + ': ' + item.count + '</span>';
+        }
+        $host.html(html);
+    }
+
+    function statusKeyFromInt(value) {
+        var map = { 1: 'Open', 2: 'InProgress', 3: 'Closed' };
+        return map[value] || 'Open';
+    }
+
+    function formatStatus(value) {
+        var map = { 1: 'Open', 2: 'In Progress', 3: 'Closed' };
+        return map[value] || 'Unknown';
+    }
+
+    function typeKeyFromInt(value) {
+        var map = { 1: 'Landslide', 2: 'Flood', 3: 'Fire', 4: 'Earthquake', 5: 'RoadBlockage', 6: 'Others' };
+        return map[value] || 'Others';
+    }
+
+    function formatDisasterType(value) {
+        var map = { 1: 'Landslide', 2: 'Flood', 3: 'Fire', 4: 'Earthquake', 5: 'Road Blockage', 6: 'Others' };
+        return map[value] || 'Unknown';
+    }
+
     function init() {
         bindEvents();
         writeStateToUi();
         updatePaginationUi();
         loadList(state.page);
+        loadSummary();
 
         $(window).on('resize', function () {
             if (window.innerWidth >= 768) {

@@ -20,7 +20,7 @@ public static class DependencyInjection
             ?? throw new InvalidOperationException("DefaultConnection was not found in configuration.");
 
         services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseSqlServer(connectionString));
+            options.UseSqlServer(connectionString, sql => sql.UseCompatibilityLevel(120)));
 
         services
             .AddIdentityCore<ApplicationUser>(options =>

@@ -17,10 +17,11 @@ public class DashboardService : IDashboardService
 
     public Task<Result<DashboardAnalyticsDto>> GetAnalyticsAsync(Guid? districtId, string userId, bool isSuperAdmin, IReadOnlyCollection<Guid> assignedDistrictIds, CancellationToken cancellationToken = default)
     {
+        var districtFilter = assignedDistrictIds.ToList();
         var incidents = _unitOfWork.Query<Incident>().AsQueryable();
         if (!isSuperAdmin)
         {
-            incidents = incidents.Where(x => assignedDistrictIds.Contains(x.DistrictId));
+            incidents = incidents.Where(x => districtFilter.Contains(x.DistrictId));
         }
 
         if (districtId.HasValue)
