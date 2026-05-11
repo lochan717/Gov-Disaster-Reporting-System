@@ -382,11 +382,22 @@ FodyWeavers.xsd
 
 ## Project Specific
 
+# Markdown documentation (internal/confidential docs)
+# Keep README and third-party LICENSE files
+*.md
+!README.md
+!**/LICENSE.md
+!**/license.md
+
 # Configuration files with sensitive data
+appsettings.Development.json
 appsettings.Production.json
 appsettings.Staging.json
 appsettings.Local.json
 *.secrets.json
+
+# User secrets (dotnet user-secrets)
+secrets.json
 
 # Certificate files
 *.pfx

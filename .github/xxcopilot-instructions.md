@@ -1,1 +1,0 @@
-Always refer to the knowledge base at `prd.md`,`ADMIN_SPLIT_PANE_IMPLEMENTATION.md` for project-specific context.
