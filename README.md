@@ -12,11 +12,23 @@
 
 [Features](#-features) • [Getting Started](#-getting-started) • [Architecture](#-architecture) • [API Docs](#-api-documentation) • [Contributing](#-contributing)
 
+<br/>
+
+![SAMVAD DMS Demo](docs/dms.gif)
+
 </div>
 
 ---
 
-## 📖 Overview
+## �️ Screenshots
+
+| Citizen Portal | Admin Dashboard |
+|---|---|
+| ![Citizen Portal](docs/dms.gif) | ![Admin Dashboard](docs/dms.gif) |
+
+---
+
+## �📖 Overview
 
 Gov-DMS is a production-ready **Disaster Management System** that enables citizens to report disaster incidents — such as landslides, floods, fires, and earthquakes — without requiring an account. Reports are geotagged, support media uploads, and generate a unique tracking token so citizens can monitor resolution progress via SMS.
 
