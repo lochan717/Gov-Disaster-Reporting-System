@@ -748,31 +748,76 @@ public class IncidentService : IIncidentService
 
     public async Task<Result<bool>> UpdateStatusAsync(Guid incidentId, UpdateStatusDto request, string userId, string userName, bool isSuperAdmin, IReadOnlyCollection<Guid> assignedDistrictIds, CancellationToken cancellationToken = default)
     {
-        var incident = _unitOfWork.Query<Incident>().FirstOrDefault(x => x.Id == incidentId);
-        if (incident is null)
+        try
         {
-            return Result<bool>.Fail("Incident not found.");
-        }
-
-        if (!CanAccessIncident(incident.DistrictId, isSuperAdmin, assignedDistrictIds))
-        {
-            return Result<bool>.Fail("Access denied.");
-        }
-
-        var note = request.Note?.Trim();
-
-        if (incident.Status == request.NewStatus)
-        {
-            if (string.IsNullOrWhiteSpace(note))
+            var incident = _unitOfWork.Query<Incident>().FirstOrDefault(x => x.Id == incidentId);
+            if (incident is null)
             {
-                return Result<bool>.Fail("No status change detected. Add a note or choose a different status.");
+                return Result<bool>.Fail("Incident not found.");
             }
 
-            var oldValuesSnapshot = SerializeIncidentAuditSnapshot(incident);
+            if (!CanAccessIncident(incident.DistrictId, isSuperAdmin, assignedDistrictIds))
+            {
+                return Result<bool>.Fail("Access denied.");
+            }
+
+            var note = request.Note?.Trim();
+
+            if (incident.Status == request.NewStatus)
+            {
+                if (string.IsNullOrWhiteSpace(note))
+                {
+                    return Result<bool>.Fail("No status change detected. Add a note or choose a different status.");
+                }
+
+                var oldValuesSnapshot = SerializeIncidentAuditSnapshot(incident);
+                incident.UpdatedAt = DateTime.UtcNow;
+
+                if (incident.Status == IncidentStatus.Closed)
+                {
+                    incident.ResolutionNote = note;
+                }
+
+                _unitOfWork.Update(incident);
+
+                await _unitOfWork.AddAsync(new IncidentStatusHistory
+                {
+                    Id = Guid.NewGuid(),
+                    IncidentId = incident.Id,
+                    FromStatus = incident.Status,
+                    ToStatus = incident.Status,
+                    ChangedById = userId,
+                    ChangedByName = userName,
+                    Note = note,
+                    Timestamp = DateTime.UtcNow
+                }, cancellationToken);
+
+                await _unitOfWork.SaveChangesAsync(cancellationToken);
+                await _auditService.LogAuditAsync(
+                    userId,
+                    "StatusNoteUpdated",
+                    nameof(Incident),
+                    incident.Id.ToString(),
+                    oldValuesSnapshot,
+                    SerializeIncidentAuditSnapshot(incident),
+                    cancellationToken);
+
+                return Result<bool>.Succeed(true, "Note updated.");
+            }
+
+            if (!IsValidTransition(incident.Status, request.NewStatus, request.Note))
+            {
+                return Result<bool>.Fail("Invalid status transition.");
+            }
+
+            var oldValues = SerializeIncidentAuditSnapshot(incident);
+            var previous = incident.Status;
+            incident.Status = request.NewStatus;
             incident.UpdatedAt = DateTime.UtcNow;
 
-            if (incident.Status == IncidentStatus.Closed)
+            if (request.NewStatus == IncidentStatus.Closed)
             {
+                incident.ClosedAt = DateTime.UtcNow;
                 incident.ResolutionNote = note;
             }
 
@@ -782,70 +827,32 @@ public class IncidentService : IIncidentService
             {
                 Id = Guid.NewGuid(),
                 IncidentId = incident.Id,
-                FromStatus = incident.Status,
-                ToStatus = incident.Status,
+                FromStatus = previous,
+                ToStatus = request.NewStatus,
                 ChangedById = userId,
                 ChangedByName = userName,
-                Note = note,
+                Note = note ?? string.Empty,
                 Timestamp = DateTime.UtcNow
             }, cancellationToken);
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
             await _auditService.LogAuditAsync(
                 userId,
-                "StatusNoteUpdated",
+                "StatusChange",
                 nameof(Incident),
                 incident.Id.ToString(),
-                oldValuesSnapshot,
+                oldValues,
                 SerializeIncidentAuditSnapshot(incident),
                 cancellationToken);
+            //Send SmS Notification
+            //await _notificationService.NotifyStatusChangedAsync(incident.Id, cancellationToken);
 
-            return Result<bool>.Succeed(true, "Note updated.");
+            return Result<bool>.Succeed(true, "Status updated.");
         }
-
-        if (!IsValidTransition(incident.Status, request.NewStatus, request.Note))
+        catch (Exception ex)
         {
-            return Result<bool>.Fail("Invalid status transition.");
+            throw ex;
         }
-
-        var oldValues = SerializeIncidentAuditSnapshot(incident);
-        var previous = incident.Status;
-        incident.Status = request.NewStatus;
-        incident.UpdatedAt = DateTime.UtcNow;
-
-        if (request.NewStatus == IncidentStatus.Closed)
-        {
-            incident.ClosedAt = DateTime.UtcNow;
-            incident.ResolutionNote = note;
-        }
-
-        _unitOfWork.Update(incident);
-
-        await _unitOfWork.AddAsync(new IncidentStatusHistory
-        {
-            Id = Guid.NewGuid(),
-            IncidentId = incident.Id,
-            FromStatus = previous,
-            ToStatus = request.NewStatus,
-            ChangedById = userId,
-            ChangedByName = userName,
-            Note = note ?? string.Empty,
-            Timestamp = DateTime.UtcNow
-        }, cancellationToken);
-
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
-        await _auditService.LogAuditAsync(
-            userId,
-            "StatusChange",
-            nameof(Incident),
-            incident.Id.ToString(),
-            oldValues,
-            SerializeIncidentAuditSnapshot(incident),
-            cancellationToken);
-
-        await _notificationService.NotifyStatusChangedAsync(incident.Id, cancellationToken);
-
-        return Result<bool>.Succeed(true, "Status updated.");
     }
 
     private static bool CanAccessIncident(Guid districtId, bool isSuperAdmin, IReadOnlyCollection<Guid> assignedDistrictIds)
